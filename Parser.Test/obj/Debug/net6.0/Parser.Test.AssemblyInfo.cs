@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("Parser.Core")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("Parser.Test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("Parser.Core")]
-[assembly: System.Reflection.AssemblyTitleAttribute("Parser.Core")]
+[assembly: System.Reflection.AssemblyProductAttribute("Parser.Test")]
+[assembly: System.Reflection.AssemblyTitleAttribute("Parser.Test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // 由 MSBuild WriteCodeFragment 类生成。

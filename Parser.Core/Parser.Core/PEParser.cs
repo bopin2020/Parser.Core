@@ -12,6 +12,8 @@ namespace Parser.Core
 {
     public abstract class PEParser : IParser
     {
+        private bool _isDotnet;
+
         private IMAGE_DOS_HEADER _dosHeader;
 
         private IMAGE_FILE_HEADER _fileHeader;
@@ -24,6 +26,28 @@ namespace Parser.Core
 
         private IMAGE_OPTIONAL_HEADER64 _optionalHeader64;
 
+        public bool IsDotnet
+        {
+            get
+            {
+                if(Is32BitHeader)
+                {
+                    return _optionalHeader32.CLRRuntimeHeader.MetaDataRVA != 0 && _optionalHeader32.CLRRuntimeHeader.MetadataSize == 0x48;
+                }
+                return _optionalHeader64.CLRRuntimeHeader.MetaDataRVA != 0 && _optionalHeader64.CLRRuntimeHeader.MetadataSize == 0x48;
+            }
+        }
+
+        public bool Is32BitHeader
+        {
+            get
+            {
+                // System.UInt16     Struct
+                UInt16 IMAGE_FILE_32BIT_MACHINE = 0x0100;
+                return (IMAGE_FILE_32BIT_MACHINE & _fileHeader.Characteristics) == IMAGE_FILE_32BIT_MACHINE;
+            }
+        }
+
         private T FromBinaryReader<T>(BinaryReader br) where T : struct
         {
             byte[] data = br.ReadBytes(Marshal.SizeOf(typeof(T)));
@@ -35,6 +59,7 @@ namespace Parser.Core
 
         private void Init()
         {
+            if(!IsPEFile) { throw new ArgumentException("The binary was not standard pe file"); }
             using (MemoryStream ms = new MemoryStream(OriginalData))
             {
                 using (BinaryReader br = new BinaryReader(ms))
@@ -82,14 +107,21 @@ namespace Parser.Core
             Init();
         }
 
-        public bool Is32BitHeader
+        public bool IsPE() => IsPEFile;
+    }
+
+    public class PEParserUS : PEParser
+    {
+        public PEParserUS(byte[] data) : base(data)
         {
-            get
-            {
-                // System.UInt16     Struct
-                UInt16 IMAGE_FILE_32BIT_MACHINE = 0x0100;
-                return (IMAGE_FILE_32BIT_MACHINE & _fileHeader.Characteristics) == IMAGE_FILE_32BIT_MACHINE;
-            }
+        }
+
+        public PEParserUS(Stream stream) : base(stream)
+        {
+        }
+
+        public PEParserUS(string filename) : base(filename)
+        {
         }
     }
 }

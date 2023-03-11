@@ -17,5 +17,15 @@ namespace Parser.Test
             Assert.IsTrue(dotnetParser.IsDotnetPE());
             Assert.Pass();
         }
+
+        [Test]
+        public void TestNonPEFile()
+        {
+            string testFramework = @"D:\Desktop\petools\bof\arp.x64.o";
+            PEParser dotnetParser = new PEParserUS(testFramework);
+            Assert.IsTrue(dotnetParser.IsPE());
+            Assert.Pass();
+        }
+
     }
 }

@@ -9,8 +9,6 @@ namespace Parser.Core
 {
     public abstract class DotnetParser : PEParser
     {
-        private bool _isDotnet;
-
         private IMAGE_COR20_HEADER _imageCore20Header;
 
         private MetadataHeader _metadataHeader;
@@ -32,7 +30,7 @@ namespace Parser.Core
         {
         }
 
-        public virtual bool IsDotnetPE() => _isDotnet;
+        public virtual bool IsDotnetPE() => IsDotnet;
 
         public bool IsPureIL() => (_imageCore20Header.Flags | RuntimeFlags.COMIMAGE_FLAGS_ILONLY) == RuntimeFlags.COMIMAGE_FLAGS_ILONLY;
 

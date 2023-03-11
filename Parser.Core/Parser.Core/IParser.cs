@@ -8,10 +8,16 @@
 
         public byte[] OriginalData { get; private set; }
 
+        public bool IsPEFile { get; private set; }
+
         private void SetInit()
         {
             _init = true;
-            _status = ParserStatus.Init;
+            IsPEFile = OriginalData[0] == 0x4D && OriginalData[1] == 0x5A;
+            if (!IsPEFile)
+                _status = ParserStatus.Failed;
+            else
+                _status = ParserStatus.Init;
         }
 
         protected IParser(byte[] data)
