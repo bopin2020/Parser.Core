@@ -1,12 +1,5 @@
 ﻿using Parser.Core.PE;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Parser.Core
 {
@@ -30,7 +23,7 @@ namespace Parser.Core
         {
             get
             {
-                if(Is32BitHeader)
+                if (Is32BitHeader)
                 {
                     return _optionalHeader32.CLRRuntimeHeader.MetaDataRVA != 0 && _optionalHeader32.CLRRuntimeHeader.MetadataSize == 0x48;
                 }
@@ -59,7 +52,7 @@ namespace Parser.Core
 
         private void Init()
         {
-            if(!IsPEFile) { throw new ArgumentException("The binary was not standard pe file"); }
+            if (!IsPEFile) { throw new ArgumentException("The binary was not standard pe file"); }
             using (MemoryStream ms = new MemoryStream(OriginalData))
             {
                 using (BinaryReader br = new BinaryReader(ms))
@@ -68,7 +61,7 @@ namespace Parser.Core
                     ms.Seek(_dosHeader.e_lfanew, SeekOrigin.Begin);
                     UInt32 ntHeadersSignature = br.ReadUInt32();
                     _fileHeader = FromBinaryReader<IMAGE_FILE_HEADER>(br);
-                    if(Is32BitHeader)
+                    if (Is32BitHeader)
                     {
                         _optionalHeader32 = FromBinaryReader<IMAGE_OPTIONAL_HEADER32>(br);
                         _ntHeader32 = new IMAGE_NT_HEADERS32()

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Parser.Core.Dotnet
+﻿namespace Parser.Core.Dotnet
 {
     /// <summary>
     /// II.25.3.3.1 Runtime flags 
