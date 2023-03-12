@@ -19,9 +19,21 @@ namespace Parser.Core.PE
         /// January 1st 1970 00:00:00 or 0
         /// </summary>
         public UInt32 TimeDateStamp;
+        /// <summary>
+        /// Always 0 
+        /// </summary>
         public UInt32 PointerToSymbolTable;
+        /// <summary>
+        /// Always 0
+        /// </summary>
         public UInt32 NumberOfSymbols;
+        /// <summary>
+        /// Size of the optional header, the format is described below
+        /// </summary>
         public UInt16 SizeOfOptionalHeader;
+        /// <summary>
+        /// Flags indicating attributes of the file
+        /// </summary>
         public UInt16 Characteristics;
     }
     public enum MachineType : ushort
@@ -186,11 +198,21 @@ namespace Parser.Core.PE
         RES_3 = 0x0008,
         IMAGE_DLL_CHARACTERISTICS_DYNAMIC_BASE = 0x0040,
         IMAGE_DLL_CHARACTERISTICS_FORCE_INTEGRITY = 0x0080,
+        /// <summary>
+        /// Shall be one if and only if
+        ///COMIMAGE_FLAGS_32BITREQUIRED is
+        ///one
+        /// </summary>
+        IMAGE_FILE_32BIT_MACHINE = 0x0100,
         IMAGE_DLL_CHARACTERISTICS_NX_COMPAT = 0x0100,
         IMAGE_DLLCHARACTERISTICS_NO_ISOLATION = 0x0200,
         IMAGE_DLLCHARACTERISTICS_NO_SEH = 0x0400,
         IMAGE_DLLCHARACTERISTICS_NO_BIND = 0x0800,
         RES_4 = 0x1000,
+        /// <summary>
+        /// The image file is a dynamic-link library (DLL)
+        /// </summary>
+        IMAGE_FILE_DLL = 0x2000,
         IMAGE_DLLCHARACTERISTICS_WDM_DRIVER = 0x2000,
         IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE = 0x8000
     }

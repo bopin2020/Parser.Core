@@ -1,11 +1,13 @@
 ﻿using Parser.Core.PE;
+using System;
 using System.Runtime.InteropServices;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Parser.Core
 {
     public abstract class PEParser : IParser
     {
-        private const bool _allocMemZeroFill = true;
+        private const bool _allocMemZeroFill = false;
 
         private bool _isDotnet;
 
@@ -63,6 +65,47 @@ namespace Parser.Core
             }
         }
 
+        private void CopyPEHeaderToMem()
+        {
+            if(Is32BitHeader)
+            {
+                for (int i = 0; i < _optionalHeader32.SizeOfHeaders; i++)
+                {
+                    Marshal.WriteByte(ImageBase, i, OriginalData[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _optionalHeader64.SizeOfHeaders; i++)
+                {
+                    Marshal.WriteByte(ImageBase, i, OriginalData[i]);
+                }
+            }
+
+        }
+
+        private void CopyPESectionToMem()
+        {
+            foreach (var item in _sectionsHeaderLazy.Value)
+            {
+                IntPtr secAddr = new IntPtr(ImageBase.ToInt64() + item.VirtualAddress);
+                for (int i = 0; i < item.SizeOfRawData; i++)
+                {
+                    Marshal.WriteByte(secAddr, i, OriginalData[i + item.PointerToRawData]);
+                }
+            }
+            // we won't execute pe in memory so that's no need change Section Characteristics
+        }
+
+        private void InitSections(BinaryReader br)
+        {
+            for (int i = 0; i < _fileHeader.NumberOfSections; i++)
+            {
+                var section = FromBinaryReader<IMAGE_SECTION_HEADER>(br);
+                _sectionsHeaderLazy.Value.Add(section);
+            }
+        }
+
         private void Init()
         {
             if (!IsPEFile) { throw new ArgumentException("The binary was not standard pe file"); }
@@ -99,11 +142,9 @@ namespace Parser.Core
                         ImageMemory((int)_optionalHeader64.SizeOfImage);
                     }
 
-                    for (int i = 0; i < _fileHeader.NumberOfSections; i++)
-                    {
-                        var section = FromBinaryReader<IMAGE_SECTION_HEADER>(br);
-                        _sectionsHeaderLazy.Value.Add(section);
-                    }
+                    CopyPEHeaderToMem();
+                    InitSections(br);
+                    CopyPESectionToMem();
                 }
             }            
         }

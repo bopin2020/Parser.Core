@@ -1,21 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Parser.Core.PE
 {
+    /// <summary>
+    /// II.25.3 Section headers 
+    /// page 307
+    ///  count 40 bytes
+    /// </summary>
     [StructLayout(LayoutKind.Explicit)]
     public unsafe struct IMAGE_SECTION_HEADER
     {
+        /// <summary>
+        /// An 8-byte, null-padded ASCII string. There is no terminating null
+        /// if the string is exactly eight characters long
+        /// </summary>
         [FieldOffset(0)] public fixed byte Name[8];
+        /// <summary>
+        /// Total size of the section in bytes. If this value is greater than
+        /// SizeOfRawData, the section is zero-padded.
+        /// </summary>
         [FieldOffset(8)] public UInt32 VirtualSize;
+        /// <summary>
+        /// For executable images this is the address of the first byte of the
+        ///section, when loaded into memory, relative to the image base
+        /// </summary>
         [FieldOffset(12)] public UInt32 VirtualAddress;
+        /// <summary>
+        /// Size of the initialized data on disk in bytes, shall be a multiple of
+        ///FileAlignment from the PE header.If this is less than VirtualSize
+        ///the remainder of the section is zero filled. Because this field is
+        ///rounded while the VirtualSize field is not it is possible for this to
+        ///be greater than VirtualSize as well.When a section contains only
+        ///uninitialized data, this field should be 0
+        /// </summary>
         [FieldOffset(16)] public UInt32 SizeOfRawData;
+        /// <summary>
+        /// Offset of section’s first page within the PE file. This shall be a
+        ///multiple of FileAlignment from the optional header.When a
+        ///section contains only uninitialized data, this field should be 0
+        /// </summary>
         [FieldOffset(20)] public UInt32 PointerToRawData;
+        /// <summary>
+        /// Should be 0
+        /// </summary>
         [FieldOffset(24)] public UInt32 PointerToRelocations;
         [FieldOffset(28)] public UInt32 PointerToLinenumbers;
         [FieldOffset(32)] public UInt16 NumberOfRelocations;
