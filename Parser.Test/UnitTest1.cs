@@ -12,7 +12,9 @@ namespace Parser.Test
         [Test]
         public void Test1()
         {
-            string testFramework = @"D:\Desktop\petools\sharp\msgnet.exe";
+            // Rubeus.exe
+            // msgnet.exe
+            string testFramework = @"D:\Desktop\petools\sharp\Rubeus.exe";
             DotnetParser dotnetParser = new DotnetParserUS(testFramework);
             Assert.IsTrue(dotnetParser.IsDotnetPE());
             Assert.Pass();

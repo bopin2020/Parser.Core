@@ -41,9 +41,7 @@ namespace Parser.Core
         {
             get
             {
-                // System.UInt16     Struct
-                UInt16 IMAGE_FILE_32BIT_MACHINE = 0x0100;
-                return (IMAGE_FILE_32BIT_MACHINE & _fileHeader.Characteristics) == IMAGE_FILE_32BIT_MACHINE;
+                return _fileHeader.Machine == MachineType.I386;
             }
         }
 
