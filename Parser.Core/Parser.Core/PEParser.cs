@@ -5,6 +5,8 @@ namespace Parser.Core
 {
     public abstract class PEParser : IParser
     {
+        private const bool _allocMemZeroFill = true;
+
         private bool _isDotnet;
 
         private IMAGE_DOS_HEADER _dosHeader;
@@ -18,6 +20,8 @@ namespace Parser.Core
         private IMAGE_OPTIONAL_HEADER32 _optionalHeader32;
 
         private IMAGE_OPTIONAL_HEADER64 _optionalHeader64;
+
+        private Lazy<List<IMAGE_SECTION_HEADER>> _sectionsHeaderLazy = new ();
 
         public bool IsDotnet
         {
@@ -41,13 +45,22 @@ namespace Parser.Core
             }
         }
 
-        private T FromBinaryReader<T>(BinaryReader br) where T : struct
+        public IntPtr ImageBase { get; private set; }
+
+        private void ImageMemory(int size)
         {
-            byte[] data = br.ReadBytes(Marshal.SizeOf(typeof(T)));
-            GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            var result = Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
-            handle.Free();
-            return result;
+            if (_allocMemZeroFill)
+            {
+                unsafe
+                {
+                    byte* basePtr = stackalloc byte[size];
+                    ImageBase = new IntPtr(basePtr);
+                }
+            }
+            else
+            {
+                ImageBase = Marshal.AllocHGlobal(size);
+            }
         }
 
         private void Init()
@@ -59,6 +72,7 @@ namespace Parser.Core
                 {
                     _dosHeader = FromBinaryReader<IMAGE_DOS_HEADER>(br);
                     ms.Seek(_dosHeader.e_lfanew, SeekOrigin.Begin);
+                    // PE00
                     UInt32 ntHeadersSignature = br.ReadUInt32();
                     _fileHeader = FromBinaryReader<IMAGE_FILE_HEADER>(br);
                     if (Is32BitHeader)
@@ -70,6 +84,8 @@ namespace Parser.Core
                             FileHeader = _fileHeader,
                             OptionalHeader = _optionalHeader32
                         };
+
+                        ImageMemory((int)_optionalHeader32.SizeOfImage);
                     }
                     else
                     {
@@ -80,9 +96,16 @@ namespace Parser.Core
                             FileHeader = _fileHeader,
                             OptionalHeader = _optionalHeader64
                         };
+                        ImageMemory((int)_optionalHeader64.SizeOfImage);
+                    }
+
+                    for (int i = 0; i < _fileHeader.NumberOfSections; i++)
+                    {
+                        var section = FromBinaryReader<IMAGE_SECTION_HEADER>(br);
+                        _sectionsHeaderLazy.Value.Add(section);
                     }
                 }
-            }
+            }            
         }
 
         protected PEParser(byte[] data) : base(data)
@@ -101,6 +124,23 @@ namespace Parser.Core
         }
 
         public bool IsPE() => IsPEFile;
+
+        public DateTime GetDateStamp()
+        {
+            // TimeDateStamp to DateTime
+            // UNDO
+            return DateTime.FromFileTime(_fileHeader.TimeDateStamp + new DateTime(1970, 1, 1, 0, 0, 0).ToFileTimeUtc());
+        }
+
+        public T FromBinaryReader<T>(BinaryReader br) where T : struct
+        {
+            byte[] data = br.ReadBytes(Marshal.SizeOf(typeof(T)));
+            GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            var result = Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
+            handle.Free();
+            return result;
+        }
+
     }
 
     public class PEParserUS : PEParser

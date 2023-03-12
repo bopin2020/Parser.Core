@@ -5,8 +5,19 @@ namespace Parser.Core.PE
     [StructLayout(LayoutKind.Sequential)]
     public struct IMAGE_FILE_HEADER
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public MachineType Machine;
+        /// <summary>
+        /// Number of sections; indicates size of the Section Table,
+        /// which immediately follows the headers
+        /// </summary>
         public UInt16 NumberOfSections;
+        /// <summary>
+        /// Time and date the file was created in seconds since
+        /// January 1st 1970 00:00:00 or 0
+        /// </summary>
         public UInt32 TimeDateStamp;
         public UInt32 PointerToSymbolTable;
         public UInt32 NumberOfSymbols;
@@ -158,10 +169,19 @@ namespace Parser.Core.PE
         IMAGE_SUBSYSTEM_XBOX = 14
 
     }
+    /// <summary>
+    /// A CIL-only DLL sets flag 0x2000 to 1, while a CIL-only .exe has flag 0x2000 set to zero
+    /// </summary>
     public enum DllCharacteristicsType : ushort
     {
-        RES_0 = 0x0001,
-        RES_1 = 0x0002,
+        /// <summary>
+        /// IMAGE_FILE_RELOCS_STRIPPED
+        /// </summary>
+        IMAGE_FILE_RELOCS_STRIPPED = 0x0001,
+        /// <summary>
+        /// IMAGE_FILE_EXECUTABLE_IMAGE
+        /// </summary>
+        IMAGE_FILE_EXECUTABLE_IMAGE = 0x0002,
         RES_2 = 0x0004,
         RES_3 = 0x0008,
         IMAGE_DLL_CHARACTERISTICS_DYNAMIC_BASE = 0x0040,

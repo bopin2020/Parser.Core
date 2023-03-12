@@ -27,5 +27,13 @@ namespace Parser.Test
             Assert.Pass();
         }
 
+        [Test]
+        public void TestNativePEFile()
+        {
+            string testFramework = @"c:\windows\system32\cmd.exe";
+            PEParser parser = new PEParserUS(testFramework);
+            Console.WriteLine(parser.GetDateStamp());
+            Assert.Pass();
+        }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using Parser.Core.Dotnet;
+using Parser.Core.PE;
 
 namespace Parser.Core
 {
     public abstract class DotnetParser : PEParser
     {
+        private readonly static byte[] _imageCore20Sig = { 0x48,0x00,0x00,0x00,0x02,0x00,0x05,0x00 };
+
         private IMAGE_COR20_HEADER _imageCore20Header;
 
         private MetadataHeader _metadataHeader;
@@ -12,6 +15,10 @@ namespace Parser.Core
 
         private List<StreamHeader> _streamHeaders = new();
 
+        private void Init()
+        {
+
+        }
 
         protected DotnetParser(byte[] data) : base(data)
         {
