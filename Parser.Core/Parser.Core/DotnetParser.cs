@@ -14,13 +14,29 @@ namespace Parser.Core
         private MetadataHeader _metadataHeader;
 
         private MetadataTablesHeader _metadataTablesHeader;
+        /// <summary>
+        /// Array of n 4-byte unsigned integers indicating the number of rows for each present table
+        /// </summary>
+        private Lazy<List<int>> _rowsLazy = new();
 
         private Lazy<List<StreamHeader>> _streamHeadersLazy = new();
+        /// <summary>
+        /// We get MetadataTableHeader #~ addr after the last Stream offset
+        /// </summary>
+        private IntPtr _lastStreamAddr;
 
         public IntPtr MetadataAddr { get; private set; }
 
         public string MetadataString { get; private set; }
 
+        public int EntryPointToken
+        {
+            get
+            {
+                return _imageCore20Header.EntryPointToken;
+            }
+
+        }
 
         private int Padding4Bytes(string name)
         {
@@ -33,6 +49,8 @@ namespace Parser.Core
             int tmp2 = size % 4;
             return tmp2 == 0 ? tmp1 * 4 : (tmp1 + 1) * 4;
         }
+
+        
 
         private void Init()
         {
@@ -56,10 +74,17 @@ namespace Parser.Core
                 NumberOfStreams = Marshal.ReadInt16(metadataAddr,30)
             };
             int offset = 0;
-            for (int i = 0; i < _metadataHeader.NumberOfStreams; i++)
+            for (int i = 0; i < _metadataHeader.NumberOfStreams + 1; i++)
             {
                 // StreamHeader Stream Name 不大于32字符,以4字节为边界对齐
                 IntPtr streamAddr = new IntPtr(ImageBase.ToInt64() + _imageCore20Header.Metadata.MetaDataRVA + 32 + offset);
+                // 记录最后一个Stream的地址 获取MetadataTableHeaders
+                if (_metadataHeader.NumberOfStreams == i)
+                {
+                    _lastStreamAddr = streamAddr;
+                    break;
+                }
+
                 StreamHeader streamHeader = new StreamHeader()
                 {
                     Offset = Marshal.ReadInt32(streamAddr, 0),
@@ -73,6 +98,8 @@ namespace Parser.Core
                 _streamHeadersLazy.Value.Add(streamHeader);
             }
 
+            // Parse MetadataTablesHeader
+            _metadataTablesHeader = Marshal.PtrToStructure<MetadataTablesHeader>(_lastStreamAddr);
         }
 
         protected DotnetParser(byte[] data) : base(data)

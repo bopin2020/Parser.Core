@@ -50,10 +50,5 @@
         /// Also a bitmask-qword. It tells us which tables are sorted
         /// </summary>
         public long Sorted { get; set; }
-        /// <summary>
-        /// Array of n 4-byte unsigned integers indicating the number of rows for each present table
-        /// 每张表中Rows
-        /// </summary>
-        public List<int> Rows { get; set; }
     }
 }

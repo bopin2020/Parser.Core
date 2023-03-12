@@ -36,6 +36,7 @@ namespace Parser.Core.PE
         /// </summary>
         public UInt16 Characteristics;
     }
+
     public enum MachineType : ushort
     {
         /// <summary>
@@ -166,6 +167,7 @@ namespace Parser.Core.PE
         IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10b,
         IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20b
     }
+
     public enum SubSystemType : ushort
     {
         IMAGE_SUBSYSTEM_UNKNOWN = 0,
@@ -181,39 +183,79 @@ namespace Parser.Core.PE
         IMAGE_SUBSYSTEM_XBOX = 14
 
     }
+
     /// <summary>
     /// A CIL-only DLL sets flag 0x2000 to 1, while a CIL-only .exe has flag 0x2000 set to zero
+    /// https://learn.microsoft.com/en-us/windows/win32/debug/pe-format#characteristics
     /// </summary>
-    public enum DllCharacteristicsType : ushort
+    public enum CharacteristicsType : ushort
     {
         /// <summary>
         /// IMAGE_FILE_RELOCS_STRIPPED
         /// </summary>
         IMAGE_FILE_RELOCS_STRIPPED = 0x0001,
         /// <summary>
-        /// IMAGE_FILE_EXECUTABLE_IMAGE
+        /// Image only. This indicates that the image file is valid and can be run. If this flag is not set, it indicates a linker error
         /// </summary>
         IMAGE_FILE_EXECUTABLE_IMAGE = 0x0002,
-        RES_2 = 0x0004,
-        RES_3 = 0x0008,
+        /// <summary>
+        /// COFF line numbers have been removed. This flag is deprecated and should be zero
+        /// </summary>
+        IMAGE_FILE_LINE_NUMS_STRIPPED = 0x0004,
+        /// <summary>
+        /// COFF symbol table entries for local symbols have been removed. This flag is deprecated and should be zero
+        /// </summary>
+        IMAGE_FILE_LOCAL_SYMS_STRIPPED = 0x0008,
+        /// <summary>
+        /// 
+        /// </summary>
+        IMAGE_FILE_AGGRESSIVE_WS_TRIM = 0x0010,
+        IMAGE_FILE_LARGE_ADDRESS_AWARE = 0x0020,
+        /// <summary>
+        /// This flag is reserved for future use
+        /// </summary>
         IMAGE_DLL_CHARACTERISTICS_DYNAMIC_BASE = 0x0040,
+        /// <summary>
+        /// IMAGE_FILE_BYTES_REVERSED_LO
+        /// </summary>
         IMAGE_DLL_CHARACTERISTICS_FORCE_INTEGRITY = 0x0080,
         /// <summary>
         /// Shall be one if and only if
         ///COMIMAGE_FLAGS_32BITREQUIRED is
         ///one
+        ///
         /// </summary>
         IMAGE_FILE_32BIT_MACHINE = 0x0100,
         IMAGE_DLL_CHARACTERISTICS_NX_COMPAT = 0x0100,
+        /// <summary>
+        /// Debugging information is removed from the image file
+        /// </summary>
         IMAGE_DLLCHARACTERISTICS_NO_ISOLATION = 0x0200,
+        /// <summary>
+        /// If the image is on removable media, fully load it and copy it to the swap file
+        /// </summary>
         IMAGE_DLLCHARACTERISTICS_NO_SEH = 0x0400,
+        /// <summary>
+        /// If the image is on network media, fully load it and copy it to the swap file.
+        /// </summary>
         IMAGE_DLLCHARACTERISTICS_NO_BIND = 0x0800,
-        RES_4 = 0x1000,
+        /// <summary>
+        /// The image file is a system file, not a user program.
+        /// </summary>
+        IMAGE_FILE_SYSTEM = 0x1000,
         /// <summary>
         /// The image file is a dynamic-link library (DLL)
         /// </summary>
         IMAGE_FILE_DLL = 0x2000,
         IMAGE_DLLCHARACTERISTICS_WDM_DRIVER = 0x2000,
+        /// <summary>
+        /// The file should be run only on a uniprocessor machine.
+        /// </summary>
+        IMAGE_FILE_UP_SYSTEM_ONLY = 0x4000,
+        /// <summary>
+        /// Big endian: the MSB precedes the LSB in memory. This flag is deprecated and should be zero
+        /// </summary>
+        IMAGE_FILE_BYTES_REVERSED_HI = 0x8000,
         IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE = 0x8000
     }
 }

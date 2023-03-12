@@ -77,7 +77,7 @@ namespace Parser.Core.PE
         public SubSystemType Subsystem;
 
         [FieldOffset(70)]
-        public DllCharacteristicsType DllCharacteristics;
+        public CharacteristicsType DllCharacteristics;
 
         [FieldOffset(72)]
         public uint SizeOfStackReserve;
@@ -215,7 +215,7 @@ namespace Parser.Core.PE
         public SubSystemType Subsystem;
 
         [FieldOffset(70)]
-        public DllCharacteristicsType DllCharacteristics;
+        public CharacteristicsType DllCharacteristics;
 
         [FieldOffset(72)]
         public ulong SizeOfStackReserve;
