@@ -1,5 +1,6 @@
 ﻿using Parser.Core.Dotnet;
 using Parser.Core.PE;
+using System.Runtime.InteropServices;
 
 namespace Parser.Core
 {
@@ -17,19 +18,23 @@ namespace Parser.Core
 
         private void Init()
         {
-
+            IntPtr cor20Addr = new IntPtr(ImageBase.ToInt64() + CLRRuntimeRVA.VirtualAddress);
+            _imageCore20Header = Marshal.PtrToStructure<IMAGE_COR20_HEADER>(cor20Addr);
         }
 
         protected DotnetParser(byte[] data) : base(data)
         {
+            Init();
         }
 
         protected DotnetParser(Stream stream) : base(stream)
         {
+            Init();
         }
 
         protected DotnetParser(string filename) : base(filename)
         {
+            Init();
         }
 
         public virtual bool IsDotnetPE() => IsDotnet;

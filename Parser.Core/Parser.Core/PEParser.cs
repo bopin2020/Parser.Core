@@ -49,6 +49,17 @@ namespace Parser.Core
 
         public IntPtr ImageBase { get; private set; }
 
+        public RVA CLRRuntimeRVA
+        {
+            get
+            {
+                return new RVA()
+                {
+                    VirtualAddress = Is32BitHeader ? _optionalHeader32.CLRRuntimeHeader.MetaDataRVA : _optionalHeader64.CLRRuntimeHeader.MetaDataRVA
+                };
+            }
+        }
+
         private void ImageMemory(int size)
         {
             if (_allocMemZeroFill)
@@ -197,5 +208,10 @@ namespace Parser.Core
         public PEParserUS(string filename) : base(filename)
         {
         }
+    }
+
+    public struct RVA
+    {
+        public int VirtualAddress { get; set; }
     }
 }
