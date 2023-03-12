@@ -178,8 +178,7 @@ namespace Parser.Core
         public DateTime GetDateStamp()
         {
             // TimeDateStamp to DateTime
-            // UNDO
-            return DateTime.FromFileTime(_fileHeader.TimeDateStamp + new DateTime(1970, 1, 1, 0, 0, 0).ToFileTimeUtc());
+            return DateTime.FromFileTime((long)_fileHeader.TimeDateStamp * 10000000 + new DateTime(1970, 1, 1, 0, 0, 0).ToFileTimeUtc());
         }
 
         public T FromBinaryReader<T>(BinaryReader br) where T : struct
