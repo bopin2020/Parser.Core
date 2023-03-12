@@ -42,6 +42,11 @@
         {
         }
 
+        public IntPtr GetOffset(IntPtr ori,int offset)
+        {
+            return new IntPtr(ori.ToInt64() + offset);
+        }
+
         public enum ParserStatus
         {
             None,

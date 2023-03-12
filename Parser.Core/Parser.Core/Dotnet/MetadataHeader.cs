@@ -39,9 +39,5 @@
         /// 过多的Stream CFF显示会截断
         /// </summary>
         public short NumberOfStreams { get; set; }
-
-        public List<StreamHeader> StreamHeaders { get; set; }
-
-        /// Stream Headers之后就是Stream的数据
     }
 }
