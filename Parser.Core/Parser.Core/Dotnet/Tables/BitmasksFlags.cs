@@ -18,13 +18,33 @@
     /// <summary>
     /// II.23.1.2 Values for AssemblyFlags 
     /// page 275
+    /// 
+    /// https://www.ntcore.com/files/dotnetformat.htm undocumented AssemblyFlags
     /// </summary>
     public enum AssemblyFlags : int
     {
         /// <summary>
+        /// Processor Architecture unspecified
+        /// </summary>
+        None = 0x0000,
+        /// <summary>
         /// The assembly reference holds the full (unhashed) public key
         /// </summary>
         PublicKey = 0x0001,
+        Shift = 0x0004,
+        /// <summary>
+        /// Processor Architecture: neutral (PE32)
+        /// </summary>
+        MSIL = 0x0010,
+        /// <summary>
+        /// Processor Architecture: x86 (PE32)
+        /// </summary>
+        X86 = 0x0020,
+        IA64 = 0x0030,
+        AMD64 = 0x0040,
+        Mask = 0x0070,
+        Specified = 0x0080,
+        FullMask = 0x00f0,
         /// <summary>
         /// The implementation of this assembly used at runtime is
         /// not expected to match the version seen at compile time
