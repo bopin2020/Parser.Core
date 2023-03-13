@@ -68,7 +68,7 @@
     /// <summary>
     /// Flags for events
     /// </summary>
-    public enum EventAttributes
+    public enum EventAttributes : ushort
     {
         /// <summary>
         /// Event is special
