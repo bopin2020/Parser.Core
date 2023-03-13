@@ -6,7 +6,7 @@
     /// 
     /// The following table lists the values for ELEMENT_TYPE constants
     /// </summary>
-    public enum ElementType
+    public enum ElementType : byte
     {
         /// <summary>
         /// Marks end of a list
