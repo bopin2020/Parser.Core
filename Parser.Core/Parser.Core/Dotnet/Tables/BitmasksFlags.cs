@@ -527,7 +527,7 @@
     /// <summary>
     /// Flags for types
     /// </summary>
-    public enum TypeAttributes
+    public enum TypeAttributes : uint
     {
         #region Visibility
 
