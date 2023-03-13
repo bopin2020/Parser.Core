@@ -15,6 +15,10 @@
         Reserved = 0x8003,
         SHA1 = 0x8004
     }
+    /// <summary>
+    /// II.23.1.2 Values for AssemblyFlags 
+    /// page 275
+    /// </summary>
     public enum AssemblyFlags : int
     {
         /// <summary>

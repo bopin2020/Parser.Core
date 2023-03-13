@@ -26,6 +26,10 @@ namespace Parser.Core
         /// We get MetadataTableHeader #~ addr after the last Stream offset
         /// </summary>
         private IntPtr _lastStreamAddr;
+        /// <summary>
+        /// The address of first Metadata Table how many rows that have
+        /// </summary>
+        private IntPtr _firstRowsNumAddr;
 
         public IntPtr MetadataAddr { get; private set; }
 
@@ -122,7 +126,7 @@ namespace Parser.Core
             _metadataTablesHeader = Marshal.PtrToStructure<MetadataTablesHeader>(_lastStreamAddr);
 
             IntPtr firstRowsNumAddr = GetOffset(_lastStreamAddr,Marshal.SizeOf(typeof(MetadataTablesHeader)));
-
+            _firstRowsNumAddr = firstRowsNumAddr;
             ParseTables();
             // 解析每张表中 Rows的行数
             int index = 0;
