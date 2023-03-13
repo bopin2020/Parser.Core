@@ -14,7 +14,7 @@ namespace Parser.Core.Utilites
         /// </summary>
         /// <param name="bytes"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public static void HexDump(this byte[] bytes)
+        public static string HexDump(this byte[] bytes)
         {
             if (bytes == null)
             {
@@ -82,18 +82,17 @@ namespace Parser.Core.Utilites
                 }
 
             }
-
-            Console.WriteLine(result.ToString());
+            return result.ToString();
         }
 
-        public static void MemoryDump(this IntPtr addr,int size)
+        public static string MemoryDump(this IntPtr addr,int size)
         {
             byte[] data = new byte[size];
             for (int i = 0; i < size; i++)
             {
                 data[i] = Marshal.ReadByte(addr,i);
             }
-            data.HexDump();
+            return data.HexDump();
         }
     }
 }

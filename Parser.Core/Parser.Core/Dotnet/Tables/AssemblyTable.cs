@@ -1,5 +1,6 @@
 ﻿namespace Parser.Core.Dotnet.Tables
 {
+    [MetadataTableTypeDef(MetadataTableType.Assembly)]
     public struct AssemblyTable
     {
         /// <summary>

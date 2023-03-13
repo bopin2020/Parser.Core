@@ -16,8 +16,9 @@ namespace Parser.Core
         private MetadataTablesHeader _metadataTablesHeader;
         /// <summary>
         /// Array of n 4-byte unsigned integers indicating the number of rows for each present table
+        /// 记录每一张表的 Rows
         /// </summary>
-        private Lazy<List<int>> _rowsLazy = new();
+        private Lazy<Dictionary<ushort,int>> _rowsLazy = new();
 
         private Lazy<List<StreamHeader>> _streamHeadersLazy = new();
         /// <summary>
@@ -50,7 +51,22 @@ namespace Parser.Core
             return tmp2 == 0 ? tmp1 * 4 : (tmp1 + 1) * 4;
         }
 
-        
+        /// <summary>
+        /// MetadataTablesHeader.Valid long 8字节数据 按位解析表
+        /// </summary>
+        private void ParseTables()
+        {
+            // 获取二进制数据 从右往左解析
+            char[] tables = Convert.ToString(_metadataTablesHeader.Valid, 2).ToCharArray();
+            Array.Reverse(tables);
+            for (int i = 0; i < tables.Length; i++)
+            {
+                if (tables[i] == '1')
+                {
+                    _rowsLazy.Value.Add((ushort)i, 0);
+                }
+            }
+        }
 
         private void Init()
         {
@@ -100,6 +116,8 @@ namespace Parser.Core
 
             // Parse MetadataTablesHeader
             _metadataTablesHeader = Marshal.PtrToStructure<MetadataTablesHeader>(_lastStreamAddr);
+
+            ParseTables();
         }
 
         protected DotnetParser(byte[] data) : base(data)
@@ -124,6 +142,11 @@ namespace Parser.Core
         public bool IsMixedIL() => !IsPureIL();
 
         public bool IsNativeIL() => IsMixedIL();
+
+        public static DotnetParser Load(byte[] data) => new DotnetParserUS(data);
+        public static DotnetParser LoadFromStream(Stream stream) => new DotnetParserUS(stream);
+        public static DotnetParser LoadFile(string filename) => new DotnetParserUS(filename);
+
     }
 
     public class DotnetParserUS : DotnetParser

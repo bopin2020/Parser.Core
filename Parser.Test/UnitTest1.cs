@@ -1,5 +1,6 @@
 using Parser.Core;
 using Parser.Core.Utilites;
+using System.Diagnostics;
 
 namespace Parser.Test
 {
@@ -16,12 +17,16 @@ namespace Parser.Test
             // Rubeus.exe
             // msgnet.exe
             string testFramework = @"D:\Desktop\petools\sharp\msgnet.exe";
-            DotnetParser dotnetParser = new DotnetParserUS(testFramework);
+            DotnetParser dotnetParser = DotnetParser.LoadFile(testFramework);
+            dotnetParser.DisposeCallback.Push(() => Console.WriteLine("1"));
+            dotnetParser.DisposeCallback.Push(() => Console.WriteLine("2"));
+
             Console.WriteLine(dotnetParser.GetDateStamp());
             //dotnetParser.OriginalData.HexDump();
             dotnetParser.MetadataAddr.MemoryDump(48);
 
             Assert.IsTrue(dotnetParser.IsDotnetPE());
+            Assert.IsTrue(dotnetParser.TryDispose(out _));
             Assert.Pass();
         }
 

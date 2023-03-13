@@ -25,6 +25,8 @@ namespace Parser.Core
 
         private Lazy<List<IMAGE_SECTION_HEADER>> _sectionsHeaderLazy = new ();
 
+        public Stack<Action> DisposeCallback = new Stack<Action>();
+
         public bool IsDotnet
         {
             get
@@ -190,6 +192,25 @@ namespace Parser.Core
             return result;
         }
 
+        public bool TryDispose(out DisposeResult result)
+        {
+            result = DisposeResult.Failed;
+            bool _ret = false;
+            try
+            {
+                while (DisposeCallback.TryPop(out Action action))
+                {
+                    action.Invoke();
+                }
+                result = DisposeResult.Success;
+                _ret = true;
+            }
+            catch (Exception)
+            {
+                //DisposeCallback.Count;
+            }
+            return _ret;
+        }
     }
 
     public class PEParserUS : PEParser
@@ -210,5 +231,11 @@ namespace Parser.Core
     public struct RVA
     {
         public int VirtualAddress { get; set; }
+    }
+
+    public enum DisposeResult
+    {
+        Failed,
+        Success
     }
 }

@@ -4,6 +4,8 @@
     /// #~  structrue
     /// II.24.2.6 #~ stream
     /// ecma335 page 299
+    /// 
+    /// https://www.ntcore.com/files/dotnetformat.htm#The%20MetaData%20Tables
     /// </summary>
     public struct MetadataTablesHeader
     {
@@ -43,6 +45,7 @@
         /// 
         /// For example when the DeclSecuritytable is present in the logical metadata, bit 0x0e should be set in the Valid vector
         /// 
+        /// 仅使用了 44bit
         /// </summary>
         public long Valid { get; set; }
         /// <summary>
