@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Parser.Core.Dotnet.Tables
 {
-    [AttributeUsage(AttributeTargets.Struct)]
+    [AttributeUsage(AttributeTargets.Struct,AllowMultiple = true)]
     public class MetadataTableTypeDefAttribute : Attribute
     {
         public ushort BitNumber { get; set; }
