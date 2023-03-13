@@ -1,4 +1,5 @@
 ﻿using Parser.Core.Dotnet;
+using Parser.Core.Dotnet.Tables;
 using Parser.Core.PE;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -18,7 +19,7 @@ namespace Parser.Core
         /// Array of n 4-byte unsigned integers indicating the number of rows for each present table
         /// 记录每一张表的 Rows
         /// </summary>
-        private Lazy<Dictionary<ushort,int>> _rowsLazy = new();
+        private Lazy<List<MetadataTableContent>> _rowsLazy = new();
 
         private Lazy<List<StreamHeader>> _streamHeadersLazy = new();
         /// <summary>
@@ -63,7 +64,10 @@ namespace Parser.Core
             {
                 if (tables[i] == '1')
                 {
-                    _rowsLazy.Value.Add((ushort)i, 0);
+                    _rowsLazy.Value.Add(new MetadataTableContent()
+                    {
+                        Type = (MetadataTableType)i,
+                    });
                 }
             }
         }
@@ -117,7 +121,16 @@ namespace Parser.Core
             // Parse MetadataTablesHeader
             _metadataTablesHeader = Marshal.PtrToStructure<MetadataTablesHeader>(_lastStreamAddr);
 
+            IntPtr firstRowsNumAddr = GetOffset(_lastStreamAddr,Marshal.SizeOf(typeof(MetadataTablesHeader)));
+
             ParseTables();
+            // 解析每张表中 Rows的行数
+            int index = 0;
+            foreach (var item in _rowsLazy.Value)
+            {
+                item.RowLength = Marshal.ReadInt32(firstRowsNumAddr, index);
+                index += 4;
+            }
         }
 
         protected DotnetParser(byte[] data) : base(data)
