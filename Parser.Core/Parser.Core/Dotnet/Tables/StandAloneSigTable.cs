@@ -23,7 +23,7 @@ namespace Parser.Core.Dotnet.Tables
     /// Duplicate rows are allowed
     /// </summary>
     [MetadataTableTypeDef(MetadataTableType.StandAloneSig)]
-    [MetadataTableLevel(MetadataTableLevel.Sophisticated)]
+    [MetadataTableLevel(MetadataTableLevel.Important)]
     public struct StandAloneSigTable
     {
         /// <summary>
