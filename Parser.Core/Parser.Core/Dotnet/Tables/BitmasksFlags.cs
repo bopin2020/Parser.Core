@@ -489,7 +489,7 @@
     /// <summary>
     /// Flags for params
     /// </summary>
-    public enum ParamAttributes
+    public enum ParamAttributes : ushort
     {
         /// <summary>
         /// Param is [In]

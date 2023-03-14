@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Parser.Core.Dotnet.Tables
 {
     [MetadataTableTypeDef(MetadataTableType.NestedClass)]
-    [MetadataTableLevel(MetadataTableLevel.Sophisticated)]
+    [MetadataTableLevel(MetadataTableLevel.Important)]
     public struct NestedClassTable
     {
         /// <summary>
