@@ -85,12 +85,16 @@
     /// </summary>
     public enum FieldAttributes
     {
+        #region FieldAccessMask
+
         /// <summary>
         /// These 3 bits contain one of the following values
         /// </summary>
         FieldAccessMask = 0x0007,
         /// <summary>
         /// Member not referenceable
+        /// then this row is ignored completely in
+        /// duplicate checking
         /// </summary>
         CompilerControlled = 0x0000,
         /// <summary>
@@ -118,6 +122,9 @@
         /// contract attributes
         /// </summary>
         Public = 0x0006,
+
+        #endregion
+
         /// <summary>
         /// Defined on type, else per instance
         /// </summary>
@@ -128,6 +135,7 @@
         InitOnly = 0x0020,
         /// <summary>
         /// Value is compile time constant
+        /// const  常量  static也应该被设置
         /// </summary>
         Literal = 0x0040,
         /// <summary>
@@ -150,14 +158,20 @@
         RTSpecialName = 0x0400,
         /// <summary>
         /// Field has marshalling information
+        /// 
+        /// field 有此标识  在FieldMarshal table有对应的索引 
         /// </summary>
         HasFieldMarshal = 0x1000,
         /// <summary>
         /// Field has default
+        /// 
+        /// Constant Table 有对应索引
         /// </summary>
         HasDefault = 0x8000,
         /// <summary>
         /// Field has RVA
+        /// 
+        /// Field's RVA Table
         /// </summary>
         HasFieldRVA = 0x0100
     }

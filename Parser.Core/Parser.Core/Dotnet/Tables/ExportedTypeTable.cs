@@ -37,7 +37,8 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int TypeNamespace { get; set; }
         /// <summary>
-        /// 
+        /// an index into the File,ExportedType, AssemblyRef Table
+        /// If implementation indexes the File Table then Flags.VisibilityMask shall be public
         /// </summary>
         public int Implementation { get; set; }
     }
