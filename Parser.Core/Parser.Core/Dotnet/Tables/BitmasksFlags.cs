@@ -79,7 +79,6 @@
         /// </summary>
         RTSpecialName = 0x0400
     }
-
     /// <summary>
     /// Flags for fields
     /// </summary>
@@ -175,7 +174,6 @@
         /// </summary>
         HasFieldRVA = 0x0100
     }
-
     /// <summary>
     /// Flags for files
     /// </summary>
@@ -190,7 +188,6 @@
         /// </summary>
         ContainsNoMetaData = 0x0001,
     }
-
     /// <summary>
     /// Flags for Generic Parameters [GenericPara mAttributes]
     /// </summary>
@@ -231,7 +228,6 @@
         /// </summary>
         DefaultConstructorConstraint = 0x0010
     }
-
     public enum PInvokeAttributes
     {
         /// <summary>
@@ -262,7 +258,6 @@
         CallConvFastcall = 0x0500
 
     }
-
     /// <summary>
     /// Flags for ManifestResource
     /// </summary>
@@ -281,7 +276,6 @@
         /// </summary>
         Private = 0x0002
     }
-
     /// <summary>
     /// Flags for methods
     /// </summary>
