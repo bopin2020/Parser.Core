@@ -11,7 +11,7 @@ namespace Parser.Core.Dotnet.Tables
     /// .event
     /// </summary>
     [MetadataTableTypeDef(MetadataTableType.MethodSemantics)]
-    [MetadataTableLevel(MetadataTableLevel.Sophisticated)]
+    [MetadataTableLevel(MetadataTableLevel.Important)]
     public struct MethodSemanticsTable
     {
         /// <summary>

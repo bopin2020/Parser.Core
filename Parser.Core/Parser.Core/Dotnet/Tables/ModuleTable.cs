@@ -10,7 +10,7 @@ namespace Parser.Core.Dotnet.Tables
     /// 
     /// </summary>
     [MetadataTableTypeDef(MetadataTableType.Module)]
-    [MetadataTableLevel(MetadataTableLevel.Sophisticated)]
+    [MetadataTableLevel(MetadataTableLevel.Important)]
     public struct ModuleTable
     {
         /// <summary>

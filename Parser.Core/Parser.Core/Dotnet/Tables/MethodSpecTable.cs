@@ -11,7 +11,7 @@ namespace Parser.Core.Dotnet.Tables
     /// The MethodSpec table records the signature of an instantiated generic method
     /// </summary>
     [MetadataTableTypeDef(MetadataTableType.MethodSpec)]
-    [MetadataTableLevel(MetadataTableLevel.Sophisticated)]
+    [MetadataTableLevel(MetadataTableLevel.Important)]
     public struct MethodSpecTable
     {
         /// <summary>
