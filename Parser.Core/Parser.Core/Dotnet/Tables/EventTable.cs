@@ -26,6 +26,9 @@ namespace Parser.Core.Dotnet.Tables
         public int Name { get; set; }
         /// <summary>
         /// an index into a TypeDef, a TypeRef, or TypeSpec table
+        /// more precisely, a TypeDefOrRef coded index
+        /// This corresponds to the Type of the
+        /// Event; it is not the Type that owns this event
         /// </summary>
         public int EventType { get; set; }
     }
