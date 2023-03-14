@@ -19,10 +19,21 @@ namespace Parser.Core.Dotnet.Tables
 
     /// <summary>
     /// recognize whether the specified table was important by self
+    /// 元数据表知识的级别
     /// </summary>
     public enum MetadataTableLevel
     {
+        /// <summary>
+        /// CLI Ignore
+        /// </summary>
         CLIIgnore,
-        Important
+        /// <summary>
+        /// 
+        /// </summary>
+        Important,
+        /// <summary>
+        /// 非常重要
+        /// </summary>
+        Sophisticated,
     }
 }
