@@ -517,7 +517,7 @@
         Unused = 0xcfe0
     }
 
-    public enum PropertyAttributes
+    public enum PropertyAttributes : ushort
     {
         /// <summary>
         /// Property is specia
