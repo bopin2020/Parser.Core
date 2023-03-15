@@ -22,8 +22,11 @@ namespace Parser.Test
             dotnetParser.DisposeCallback.Push(() => Console.WriteLine("2"));
 
             Console.WriteLine(dotnetParser.GetDateStamp());
+            Console.WriteLine(dotnetParser.GetStringsStreamUTF8());
             //dotnetParser.OriginalData.HexDump();
             dotnetParser.MetadataAddr.MemoryDump(48);
+
+            
 
             Assert.IsTrue(dotnetParser.IsDotnetPE());
             Assert.IsTrue(dotnetParser.TryDispose(out _));

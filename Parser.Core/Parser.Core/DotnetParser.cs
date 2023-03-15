@@ -160,6 +160,20 @@ namespace Parser.Core
 
         public bool IsNativeIL() => IsMixedIL();
 
+        public byte[] GetStringsStream()
+        {
+            var streamheader = _streamHeadersLazy.Value.Where(x => x.Name == "#Strings").FirstOrDefault();
+
+            byte[] data = new byte[streamheader.Size];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = Marshal.ReadByte(MetadataAddr,streamheader.Offset + i);
+            }
+            return data;
+        }
+
+        public string GetStringsStreamUTF8() => Encoding.UTF8.GetString(GetStringsStream());
+
         public static DotnetParser Load(byte[] data) => new DotnetParserUS(data);
         public static DotnetParser LoadFromStream(Stream stream) => new DotnetParserUS(stream);
         public static DotnetParser LoadFile(string filename) => new DotnetParserUS(filename);
