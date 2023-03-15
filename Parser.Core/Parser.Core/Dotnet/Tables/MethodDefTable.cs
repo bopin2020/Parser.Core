@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Parser.Core.Dotnet.Bitmasks;
 
 namespace Parser.Core.Dotnet.Tables
 {
@@ -25,6 +26,7 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int RVA { get; set; }
         /// <summary>
+        /// 
         /// </summary>
         public MethodImplAttributes ImplFlags { get; set; }
         /// <summary>

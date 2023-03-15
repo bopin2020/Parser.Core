@@ -12,6 +12,7 @@ namespace Parser.Core.Dotnet.Tables
     {
         /// <summary>
         /// an index into the TypeDef table
+        /// 
         /// </summary>
         public int NestedClass { get; set; }
         /// <summary>

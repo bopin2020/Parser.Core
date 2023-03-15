@@ -1,4 +1,6 @@
-﻿namespace Parser.Core.Dotnet.Tables
+﻿using Parser.Core.Dotnet.Bitmasks;
+
+namespace Parser.Core.Dotnet.Tables
 {
     /// <summary>
     /// II.22.2 Assembly : 0x20 

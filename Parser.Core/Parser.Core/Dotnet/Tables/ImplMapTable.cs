@@ -5,6 +5,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Parser.Core.Dotnet.Bitmasks;
 
 namespace Parser.Core.Dotnet.Tables
 {

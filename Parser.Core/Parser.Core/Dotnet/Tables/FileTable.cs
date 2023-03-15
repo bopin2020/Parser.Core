@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MetadataBitmasks = Parser.Core.Dotnet.Bitmasks;
 
 namespace Parser.Core.Dotnet.Tables
 {
@@ -21,7 +22,7 @@ namespace Parser.Core.Dotnet.Tables
     {
         /// <summary>
         /// </summary>
-        public FileAttributes Flags { get; set; }
+        public MetadataBitmasks.FileAttributes Flags { get; set; }
         /// <summary>
         /// an index into the String heap
         /// </summary>

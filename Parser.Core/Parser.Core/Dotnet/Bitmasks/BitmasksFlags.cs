@@ -1,4 +1,4 @@
-﻿namespace Parser.Core.Dotnet.Tables
+﻿namespace Parser.Core.Dotnet.Bitmasks
 {
     /// <summary>
     /// Metadata logical format:
