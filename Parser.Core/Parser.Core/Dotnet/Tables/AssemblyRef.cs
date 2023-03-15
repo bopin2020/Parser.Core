@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Parser.Core.Dotnet.Bitmasks;
@@ -34,6 +33,9 @@ namespace Parser.Core.Dotnet.Tables
         public int PublicKeyOrToken { get; set; }
         /// <summary>
         /// an index into the String heap
+        /// 
+        /// 最大为int  也有可能为short 
+        /// 需要根据实际情况而定
         /// </summary>
         public int Name { get; set; }
         /// <summary>

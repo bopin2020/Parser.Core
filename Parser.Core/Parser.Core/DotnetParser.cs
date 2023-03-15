@@ -135,8 +135,6 @@ namespace Parser.Core
                 item.RowLength = Marshal.ReadInt32(firstRowsNumAddr, index);
                 index += 4;
             }
-
-            // 
         }
 
         protected DotnetParser(byte[] data) : base(data)
