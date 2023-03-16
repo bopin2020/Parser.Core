@@ -14,5 +14,7 @@
         /// 4的倍数为边界
         /// </summary>
         public string Name { get; set; }
+
+        public IntPtr BaseAddress { get; set; }
     }
 }

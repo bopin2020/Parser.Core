@@ -1,6 +1,7 @@
 ﻿using Parser.Core.Dotnet;
 using Parser.Core.Dotnet.Tables;
 using Parser.Core.PE;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -9,6 +10,8 @@ namespace Parser.Core
     public abstract class DotnetParser : PEParser
     {
         private readonly static byte[] _imageCore20Sig = { 0x48,0x00,0x00,0x00,0x02,0x00,0x05,0x00 };
+
+        private readonly Assembly _currentAssembly = Assembly.GetExecutingAssembly();
 
         private const string _Tablestream = "#~";
         private const string _Stringsstream = "#Strings";
@@ -119,12 +122,13 @@ namespace Parser.Core
                 {
                     Offset = Marshal.ReadInt32(streamAddr, 0),
                     Size = Marshal.ReadInt32(streamAddr,4),
-                    Name = Marshal.PtrToStringAnsi(GetOffset(streamAddr,8))
+                    Name = Marshal.PtrToStringAnsi(GetOffset(streamAddr,8)),
                 };
                 int padlen = Padding4Bytes(streamHeader.Name);
                 offset += 8 + padlen;
                 if (streamHeader.Name.Length % 4 == 0)
                     offset += (Marshal.ReadByte(GetOffset(streamAddr,8 + padlen)) == 0x00 ? 4 : 0);
+                streamHeader.BaseAddress = GetOffset(metadataAddr, streamHeader.Offset);
                 _streamHeadersLazy.Value.Add(streamHeader);
             }
 
@@ -140,6 +144,16 @@ namespace Parser.Core
             {
                 item.RowLength = Marshal.ReadInt32(firstRowsNumAddr, index);
                 index += 4;
+            }
+
+            // 根据Table的 Type获取对应Row的结构  初始化设置
+            foreach (var item in _rowsLazy.Value)
+            {
+                Type type = _currentAssembly.GetTypes().Where(x => x.GetCustomAttribute<MetadataTableTypeDefAttribute>()?.Type == item.Type).FirstOrDefault();
+                for (int i = 0; i < item.RowLength; i++)
+                {
+                    item.Rows.Value.Add(type.Assembly.CreateInstance(type.FullName));
+                }
             }
         }
 
