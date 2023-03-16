@@ -10,6 +10,12 @@ namespace Parser.Core
     {
         private readonly static byte[] _imageCore20Sig = { 0x48,0x00,0x00,0x00,0x02,0x00,0x05,0x00 };
 
+        private const string _Tablestream = "#~";
+        private const string _Stringsstream = "#Strings";
+        private const string _USstream = "#US";
+        private const string _GUIDstream = "#GUID";
+        private const string _Blobstream = "#Blob";
+
         private IMAGE_COR20_HEADER _imageCore20Header;
 
         private MetadataHeader _metadataHeader;
@@ -137,6 +143,18 @@ namespace Parser.Core
             }
         }
 
+        private byte[] GetStream(string streamName)
+        {
+            var streamheader = _streamHeadersLazy.Value.Where(x => x.Name == streamName).FirstOrDefault();
+
+            byte[] data = new byte[streamheader.Size];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = Marshal.ReadByte(MetadataAddr, streamheader.Offset + i);
+            }
+            return data;
+        }
+
         protected DotnetParser(byte[] data) : base(data)
         {
             Init();
@@ -160,19 +178,14 @@ namespace Parser.Core
 
         public bool IsNativeIL() => IsMixedIL();
 
-        public byte[] GetStringsStream()
-        {
-            var streamheader = _streamHeadersLazy.Value.Where(x => x.Name == "#Strings").FirstOrDefault();
+        public byte[] GetTableStream() => GetStream(_Tablestream);
+        public byte[] GetStringsStream() => GetStream(_Stringsstream);
+        public byte[] GetUSStream() => GetStream(_USstream);
+        public byte[] GetGUIDStream() => GetStream(_GUIDstream);
+        public byte[] GetBlobStream() => GetStream(_Blobstream);
 
-            byte[] data = new byte[streamheader.Size];
-            for (int i = 0; i < data.Length; i++)
-            {
-                data[i] = Marshal.ReadByte(MetadataAddr,streamheader.Offset + i);
-            }
-            return data;
-        }
-
-        public string GetStringsStreamUTF8() => Encoding.UTF8.GetString(GetStringsStream());
+        public UTF8String GetStringsStreamUTF8() => new UTF8String(GetStringsStream());
+        public string GetUSStreamUTF8() => Encoding.UTF8.GetString(Encoding.Convert(Encoding.Unicode,Encoding.UTF8, GetUSStream()));
 
         public static DotnetParser Load(byte[] data) => new DotnetParserUS(data);
         public static DotnetParser LoadFromStream(Stream stream) => new DotnetParserUS(stream);

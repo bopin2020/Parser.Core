@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/// Stolen from dnlib
 namespace Parser.Core
 {
     /// <summary>
