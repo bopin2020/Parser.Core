@@ -4,6 +4,8 @@ namespace Parser.Core
 {
     public abstract class IParser
     {
+        private string _filename;
+
         private bool _init = false;
 
         private ParserStatus _status = ParserStatus.Uninit;
@@ -11,6 +13,8 @@ namespace Parser.Core
         public byte[] OriginalData { get; private set; }
 
         public bool IsPEFile { get; private set; }
+
+        public string FileName => _filename;
 
         private void SetInit()
         {
@@ -42,6 +46,7 @@ namespace Parser.Core
 
         protected IParser(string filename) : this(File.ReadAllBytes(filename))
         {
+            _filename = filename;
         }
 
         public IntPtr GetOffset(IntPtr ori,int offset)

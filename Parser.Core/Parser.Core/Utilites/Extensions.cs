@@ -94,5 +94,7 @@ namespace Parser.Core.Utilites
             }
             return data.HexDump();
         }
+
+        public static int GetFileSize(this PEParser pe) => pe.OriginalData.Length;
     }
 }
