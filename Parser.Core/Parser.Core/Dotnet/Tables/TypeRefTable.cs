@@ -46,42 +46,11 @@ namespace Parser.Core.Dotnet.Tables
         {
             int offset = 0;
             TypeRefTable typeref = new TypeRefTable();
-            if (Marshal.ReadInt16(baseAddr, offset) < parser.GetStringsStream().Length)
-            {
-                typeref.ResolutionScope = Marshal.ReadInt16(baseAddr, offset);
-                offset += 2;
-            }
-            else
-            {
-                typeref.ResolutionScope = Marshal.ReadInt32(baseAddr, offset);
-                offset += 4;
-            }
-
-            if (Marshal.ReadInt16(baseAddr, offset) < parser.GetStringsStream().Length)
-            {
-                typeref.TypeName = Marshal.ReadInt16(baseAddr, offset);
-                offset += 2;
-            }
-            else
-            {
-                typeref.TypeName = Marshal.ReadInt32(baseAddr, offset);
-                offset += 4;
-            }
-
+            typeref.ResolutionScope = CheckIndexFromStringStream(parser,baseAddr,ref offset, typeref.ResolutionScope);
+            typeref.TypeName = CheckIndexFromStringStream(parser,baseAddr,ref offset, typeref.TypeName);
+            typeref.TypeNamespace = CheckIndexFromStringStream(parser,baseAddr,ref offset, typeref.TypeNamespace);
             typeref.StringTypeName = Marshal.PtrToStringAnsi(parser.StringStreamAddr + typeref.TypeName);
-
-            if (Marshal.ReadInt16(baseAddr, offset) < parser.GetStringsStream().Length)
-            {
-                typeref.TypeNamespace = Marshal.ReadInt16(baseAddr, offset);
-                offset += 2;
-            }
-            else
-            {
-                typeref.TypeNamespace = Marshal.ReadInt32(baseAddr, offset);
-                offset += 4;
-            }
             typeref.StringTypeNamespace = Marshal.PtrToStringAnsi(parser.StringStreamAddr + typeref.TypeNamespace);
-
             Position = offset;
             return typeref;
         }

@@ -22,6 +22,7 @@ namespace Parser.Core.Dotnet.Tables
             {MetadataTableType.MethodDef,typeof(MethodDefTableCalc) },
             {MetadataTableType.Module,typeof(ModuleCalc) },
 
+            {MetadataTableType.TypeDef,typeof(TypeDefTableCalc) },
             {MetadataTableType.TypeRef,typeof(TypeRefTableCalc) },
         };
     }

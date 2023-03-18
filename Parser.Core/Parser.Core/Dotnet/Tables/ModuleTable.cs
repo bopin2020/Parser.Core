@@ -55,36 +55,14 @@ namespace Parser.Core.Dotnet.Tables
             ModuleTable moduleTable = new ModuleTable();
             moduleTable.Generation = Marshal.ReadInt16(baseAddr,offset);
             offset += 2;
-            if (Marshal.ReadInt16(baseAddr,offset) < parser.GetStringsStream().Length)
-            {
-                moduleTable.Name = Marshal.ReadInt16(baseAddr, offset);
-                offset += 2;
-            }
-            else
-            {
-                moduleTable.Name = Marshal.ReadInt32(baseAddr, offset);
-                offset += 4;
-            }
 
+            moduleTable.Name = CheckIndexFromStringStream(parser, baseAddr, ref offset, moduleTable.Name);
+            moduleTable.Mvid = CheckIndexFromGUIDStream(parser, baseAddr, ref offset, moduleTable.Mvid);
             moduleTable.StringName = Marshal.PtrToStringAnsi(parser.StringStreamAddr + moduleTable.Name);
-
-            if (Marshal.ReadInt16(baseAddr,offset) < parser.GetGUIDStream().Length)
-            {
-                moduleTable.Mvid = Marshal.ReadInt16(baseAddr,offset);
-                offset += 2;
-            }
-            else
-            {
-                moduleTable.Mvid = Marshal.ReadInt32(baseAddr, offset);
-                offset += 4;
-            }
-
             moduleTable.EncId = Marshal.ReadInt16(baseAddr,offset);
             offset += 2;
             moduleTable.EncBaseId = Marshal.ReadInt16(baseAddr,offset);
-
             Position = offset + 2;
-
             return moduleTable;
         }
     }
