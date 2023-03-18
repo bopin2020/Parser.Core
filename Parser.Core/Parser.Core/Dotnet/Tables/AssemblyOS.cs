@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,5 +22,15 @@ namespace Parser.Core.Dotnet.Tables
         public int OSMajorVersion { get; set; }
 
         public int OSMinorVersion { get; set; }
+    }
+
+    public class AssemblyOSCalc : TableBase<AssemblyOS>
+    {
+        public override MetadataTableType Type => MetadataTableType.AssemblyOS;
+
+        public override AssemblyOS Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
     }
 }

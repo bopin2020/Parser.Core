@@ -30,4 +30,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Signature { get; set; }
     }
+
+    public class MemberRefTableCalc : TableBase<MemberRefTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.MemberRef;
+
+        public override MemberRefTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

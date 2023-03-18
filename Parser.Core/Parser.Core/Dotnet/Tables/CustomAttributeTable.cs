@@ -34,4 +34,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Value { get; set; }
     }
+
+    public class CustomAttributeTableCalc : TableBase<CustomAttributeTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.CustomAttribute;
+
+        public override CustomAttributeTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

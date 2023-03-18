@@ -27,4 +27,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Name { get; set; }
     }
+
+    public class ParamTableCalc : TableBase<ParamTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.Param;
+
+        public override ParamTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

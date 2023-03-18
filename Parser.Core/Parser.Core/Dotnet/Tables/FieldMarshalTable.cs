@@ -30,4 +30,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int NativeType { get; set; }
     }
+
+    public class FieldMarshalTableCalc : TableBase<FieldMarshalTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.FieldMarshal;
+
+        public override FieldMarshalTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

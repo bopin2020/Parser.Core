@@ -43,4 +43,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int ImportScope { get; set; }
     }
+
+    public class ImplMapTableCalc : TableBase<ImplMapTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.ImplMap;
+
+        public override ImplMapTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

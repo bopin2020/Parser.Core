@@ -27,4 +27,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Signature { get; set; }
     }
+
+    public class FieldLayoutTableCalc : TableBase<FieldLayoutTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.FieldLayout;
+
+        public override FieldLayoutTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

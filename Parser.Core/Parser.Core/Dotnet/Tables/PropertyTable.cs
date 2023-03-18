@@ -38,4 +38,14 @@ namespace Parser.Core.Dotnet.Tables
         public int Type { get; set; }
 
     }
+
+    public class PropertyTableCalc : TableBase<PropertyTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.Property;
+
+        public override PropertyTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

@@ -43,4 +43,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Implementation { get; set; }
     }
+
+    public class ExportedTypeTableCalc : TableBase<ExportedTypeTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.ExportedType;
+
+        public override ExportedTypeTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

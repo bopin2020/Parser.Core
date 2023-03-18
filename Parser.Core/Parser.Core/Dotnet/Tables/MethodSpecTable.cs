@@ -29,4 +29,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Association { get; set; }
     }
+
+    public class MethodSpecTableCalc : TableBase<MethodSpecTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.MethodSpec;
+
+        public override MethodSpecTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

@@ -39,3 +39,13 @@ MetadataHeader
 
 ![image-20230313153309622](image/image-20230313153309622.png)
 
+
+
+
+
+> 解析Module,  TypeRef 表中 Rows的数据
+
+
+
+![image-20230318150840123](README.assets/image-20230318150840123.png)
+

@@ -48,4 +48,14 @@ namespace Parser.Core.Dotnet.Tables
         public int HashValue { get; set; }
 
     }
+
+    public class AssemblyRefCalc : TableBase<AssemblyRef>
+    {
+        public override MetadataTableType Type => MetadataTableType.AssemblyRef;
+
+        public override AssemblyRef Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

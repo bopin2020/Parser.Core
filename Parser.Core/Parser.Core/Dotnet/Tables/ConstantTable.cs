@@ -39,4 +39,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Value { get; set; }
     }
+
+    public class ConstantTableCalc : TableBase<ConstantTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.Constant;
+
+        public override ConstantTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

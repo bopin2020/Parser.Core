@@ -39,4 +39,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int MethodList { get; set; }
     }
+
+    public class TypeDefTableCalc : TableBase<TypeDefTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.TypeDef;
+
+        public override TypeDefTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

@@ -33,4 +33,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Implementation { get; set; }
     }
+
+    public class ManifestResourceTableCalc : TableBase<ManifestResourceTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.ManifestResource;
+
+        public override ManifestResourceTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

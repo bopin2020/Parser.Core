@@ -30,4 +30,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Constraint { get; set; }
     }
+
+    public class GenericParamConstraintCalc : TableBase<GenericParamConstraint>
+    {
+        public override MetadataTableType Type => MetadataTableType.GenericParamConstraint;
+
+        public override GenericParamConstraint Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,20 +20,72 @@ namespace Parser.Core.Dotnet.Tables
         public short Generation { get; set; }
         /// <summary>
         /// an index into the String heap
+        /// 
+        /// 2 bytes or 4 bytes 
         /// </summary>
-        public int Name { get; set; }
+        public dynamic Name { get; set; }
+
+        public string StringName { get; set; }
+
+
         /// <summary>
         /// an index into the Guid heap; simply a Guid used to distinguish between two
         /// versions of the same module)
         /// </summary>
-        public int Mvid { get; set; }
+        public dynamic Mvid { get; set; }
         /// <summary>
         /// an index into the Guid heap; reserved, shall be zero
+        /// 0x0000
         /// </summary>
-        public int EncId { get; set; }
+        public short EncId { get; set; }
         /// <summary>
         /// an index into the Guid heap; reserved, shall be zero
+        /// 0x0000
         /// </summary>
-        public int EncBaseId { get; set; }
+        public short EncBaseId { get; set; }
+    }
+
+    public class ModuleCalc : TableBase<ModuleTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.Module;
+
+        public override ModuleTable Create(DotnetParser parser,IntPtr baseAddr)
+        {
+            int offset = 0;
+            ModuleTable moduleTable = new ModuleTable();
+            moduleTable.Generation = Marshal.ReadInt16(baseAddr,offset);
+            offset += 2;
+            if (Marshal.ReadInt16(baseAddr,offset) < parser.GetStringsStream().Length)
+            {
+                moduleTable.Name = Marshal.ReadInt16(baseAddr, offset);
+                offset += 2;
+            }
+            else
+            {
+                moduleTable.Name = Marshal.ReadInt32(baseAddr, offset);
+                offset += 4;
+            }
+
+            moduleTable.StringName = Marshal.PtrToStringAnsi(parser.StringStreamAddr + moduleTable.Name);
+
+            if (Marshal.ReadInt16(baseAddr,offset) < parser.GetGUIDStream().Length)
+            {
+                moduleTable.Mvid = Marshal.ReadInt16(baseAddr,offset);
+                offset += 2;
+            }
+            else
+            {
+                moduleTable.Mvid = Marshal.ReadInt32(baseAddr, offset);
+                offset += 4;
+            }
+
+            moduleTable.EncId = Marshal.ReadInt16(baseAddr,offset);
+            offset += 2;
+            moduleTable.EncBaseId = Marshal.ReadInt16(baseAddr,offset);
+
+            Position = offset + 2;
+
+            return moduleTable;
+        }
     }
 }

@@ -8,47 +8,21 @@ namespace Parser.Core.Dotnet.Tables
 {
     internal static class Tables
     {
-        internal static List<Type> Vault = new()
+        internal static Dictionary<MetadataTableType,Type> Vault = new()
         {
-            typeof(AssemblyOS),
-            typeof(AssemblyProcessor),
-            typeof(AssemblyRef),
-            typeof(AssemblyRefOS),
-            typeof(AssemblyRefProcessor),
-            typeof(AssemblyTable),
-            typeof(ClassLayoutTable),
-            typeof(ConstantTable),
-            typeof(CustomAttributeTable),
-            typeof(DeclSecurityTable),
+            {MetadataTableType.AssemblyOS,typeof(AssemblyOSCalc) },
+            {MetadataTableType.AssemblyProcessor,typeof(AssemblyProcessorCalc) },
+            {MetadataTableType.AssemblyRef,typeof(AssemblyRefCalc) },
+            {MetadataTableType.AssemblyRefProcessor,typeof(AssemblyRefProcessorCalc) },
+            {MetadataTableType.Assembly,typeof(AssemblyTableCalc) },
 
-            typeof(EventMapTable),
-            typeof(EventTable),
-            typeof(ExportedTypeTable),
-            typeof(FieldLayoutTable),
-            typeof(FieldMarshalTable),
-            typeof(FieldRVA),
-            typeof(FieldTable),
-            typeof(FileTable),
-            typeof(GenericParamConstraint),
-            typeof(GenericParamTable),
+            {MetadataTableType.ClassLayout,typeof(ClassLayoutTableCalc) },
+            {MetadataTableType.Constant,typeof(ConstantTableCalc) },
 
-            typeof(ImplMapTable),
-            typeof(InterfaceImplTable),
-            typeof(ManifestResourceTable),
-            typeof(MemberRefTable),
-            typeof(MethodDefTable),
-            typeof(MethodSpecTable),
-            typeof(ModuleRef),
-            typeof(ModuleTable),
-            typeof(NestedClassTable),
-            typeof(ParamTable),
+            {MetadataTableType.MethodDef,typeof(MethodDefTableCalc) },
+            {MetadataTableType.Module,typeof(ModuleCalc) },
 
-            typeof(PropertyMap),
-            typeof(PropertyTable),
-            typeof(StandAloneSigTable),
-            typeof(TypeDefTable),
-            typeof(TypeRefTable),
-            typeof(TypeSpec),
+            {MetadataTableType.TypeRef,typeof(TypeRefTableCalc) },
         };
     }
 }

@@ -20,4 +20,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Name { get; set; }
     }
+
+    public class ModuleRefCalc : TableBase<ModuleRef>
+    {
+        public override MetadataTableType Type => MetadataTableType.ModuleRef;
+
+        public override ModuleRef Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

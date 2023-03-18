@@ -32,4 +32,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int HashValue { get; set; }
     }
+
+    public class FileTableCalc : TableBase<FileTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.File;
+
+        public override FileTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

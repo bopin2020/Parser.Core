@@ -31,6 +31,9 @@ namespace Parser.Core
         private Lazy<List<MetadataTableContent>> _rowsLazy = new();
 
         private Lazy<List<StreamHeader>> _streamHeadersLazy = new();
+
+        private List<object> _tables = new List<object>();
+
         /// <summary>
         /// We get MetadataTableHeader #~ addr after the last Stream offset
         /// </summary>
@@ -39,6 +42,15 @@ namespace Parser.Core
         /// The address of first Metadata Table how many rows that have
         /// </summary>
         private IntPtr _firstRowsNumAddr;
+        /// <summary>
+        /// 64 bit 表的信息 即 包含了那些表
+        /// </summary>
+        private IntPtr _8BytesTablesInfo;
+        /// <summary>
+        /// Module 表信息的基地址
+        /// 在4字节所有表的长度之后 Module表是第一张表
+        /// </summary>
+        private IntPtr _ModuleTableInfo;
 
         public IntPtr MetadataAddr { get; private set; }
 
@@ -136,7 +148,9 @@ namespace Parser.Core
             _metadataTablesHeader = Marshal.PtrToStructure<MetadataTablesHeader>(_lastStreamAddr);
 
             IntPtr firstRowsNumAddr = GetOffset(_lastStreamAddr,Marshal.SizeOf(typeof(MetadataTablesHeader)));
+            _8BytesTablesInfo = GetOffset(_lastStreamAddr, 8);
             _firstRowsNumAddr = firstRowsNumAddr;
+
             ParseTables();
             // 解析每张表中 Rows的行数
             int index = 0;
@@ -146,6 +160,8 @@ namespace Parser.Core
                 index += 4;
             }
 
+            _ModuleTableInfo = GetOffset(firstRowsNumAddr,index);
+
             // 根据Table的 Type获取对应Row的结构  初始化设置
             foreach (var item in _rowsLazy.Value)
             {
@@ -154,6 +170,28 @@ namespace Parser.Core
                 {
                     item.Rows.Value.Add(type.Assembly.CreateInstance(type.FullName));
                 }
+            }
+            // 设置Row数据
+            // 将判断逻辑放在单独的类
+            IntPtr tmpAddr = _ModuleTableInfo;
+            for (int i = 0; i < _rowsLazy.Value.Count; i++)
+            {
+                try
+                {
+                    dynamic instance = Activator.CreateInstance(Tables.Vault[_rowsLazy.Value[i].Type]);
+                    if (instance is null) { continue; }
+                    for (int j = 0; j < _rowsLazy.Value[i].RowLength; j++)
+                    {
+                        _rowsLazy.Value[i].Rows.Value[j] = instance.Create(this, tmpAddr);
+                        // push the position
+                        tmpAddr = GetOffset(tmpAddr, instance.Position);
+                    }
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+
             }
         }
 
@@ -168,6 +206,9 @@ namespace Parser.Core
             }
             return data;
         }
+
+        private IntPtr GetStreamAddress(string streamName)
+            => GetOffset(MetadataAddr, _streamHeadersLazy.Value.Where(x => x.Name == streamName).FirstOrDefault().Offset);
 
         protected DotnetParser(byte[] data) : base(data)
         {
@@ -197,6 +238,38 @@ namespace Parser.Core
         public byte[] GetUSStream() => GetStream(_USstream);
         public byte[] GetGUIDStream() => GetStream(_GUIDstream);
         public byte[] GetBlobStream() => GetStream(_Blobstream);
+
+        public IntPtr StringStreamAddr
+        {
+            get
+            {
+                return GetStreamAddress("#Strings");
+            }
+        }
+
+        public IntPtr USStreamAddr
+        {
+            get
+            {
+                return GetStreamAddress("#US");
+            }
+        }
+
+        public IntPtr GUIDStreamAddr
+        {
+            get
+            {
+                return GetStreamAddress("#GUID");
+            }
+        }
+
+        public IntPtr BlobStreamAddr
+        {
+            get
+            {
+                return GetStreamAddress("#Blob");
+            }
+        }
 
         public UTF8String GetStringsStreamUTF8() => new UTF8String(GetStringsStream());
         public string GetUSStreamUTF8() => Encoding.UTF8.GetString(Encoding.Convert(Encoding.Unicode,Encoding.UTF8, GetUSStream()));

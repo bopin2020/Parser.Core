@@ -43,4 +43,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Parent { get; set; }
     }
+
+    public class ClassLayoutTableCalc : TableBase<ClassLayoutTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.ClassLayout;
+
+        public override ClassLayoutTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Parser.Core.Dotnet.Bitmasks;
@@ -35,14 +36,60 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into the String heap
         /// </summary>
-        public int Name { get; set; }
+        public dynamic Name { get; set; }
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
-        public int Signature { get; set; }
+        public dynamic Signature { get; set; }
         /// <summary>
         /// an index into the Param table
         /// </summary>
-        public int ParamList { get; set; }
+        public dynamic ParamList { get; set; }
+    }
+
+    public class MethodDefTableCalc : TableBase<MethodDefTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.MethodDef;
+
+        public override MethodDefTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            int offset = 0;
+            MethodDefTable methodDef = new MethodDefTable();
+            methodDef.RVA = Marshal.ReadInt32(baseAddr + offset);
+            offset += 4;
+
+            methodDef.ImplFlags = (MethodImplAttributes)Marshal.ReadInt16(baseAddr + offset);
+            offset += 2;
+
+
+            methodDef.Flags = (MethodAttributes)Marshal.ReadInt16(baseAddr + offset);
+            offset += 2;
+
+            if (Marshal.ReadInt16(baseAddr, offset) < parser.GetStringsStream().Length)
+            {
+                methodDef.Name = Marshal.ReadInt16(baseAddr, offset);
+                offset += 2;
+            }
+            else
+            {
+                methodDef.Name = Marshal.ReadInt32(baseAddr, offset);
+                offset += 4;
+            }
+
+
+
+            if (Marshal.ReadInt16(baseAddr, offset) < parser.GetBlobStream().Length)
+            {
+                methodDef.Signature = Marshal.ReadInt16(baseAddr, offset);
+                offset += 2;
+            }
+            else
+            {
+                methodDef.Signature = Marshal.ReadInt32(baseAddr, offset);
+                offset += 4;
+            }
+
+            return methodDef;
+        }
     }
 }

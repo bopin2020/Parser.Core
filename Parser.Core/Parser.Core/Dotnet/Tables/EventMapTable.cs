@@ -28,4 +28,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int EventList { get; set; }
     }
+
+    public class EventMapTableCalc : TableBase<EventMapTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.EventMap;
+
+        public override EventMapTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

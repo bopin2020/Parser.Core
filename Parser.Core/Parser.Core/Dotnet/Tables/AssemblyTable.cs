@@ -52,4 +52,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Culture { get; set; }
     }
+
+    public class AssemblyTableCalc : TableBase<AssemblyTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.Assembly;
+
+        public override AssemblyTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

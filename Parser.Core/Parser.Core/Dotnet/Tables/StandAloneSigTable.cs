@@ -34,4 +34,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Signature { get; set; }
     }
+
+    public class StandAloneSigTableCalc : TableBase<StandAloneSigTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.StandAloneSig;
+
+        public override StandAloneSigTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

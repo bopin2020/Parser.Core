@@ -30,4 +30,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int MethodDeclaration { get; set; }
     }
+
+    public class MethodImplTableCalc : TableBase<MethodImplTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.MethodImpl;
+
+        public override MethodImplTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

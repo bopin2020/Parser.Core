@@ -42,4 +42,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Signature { get; set; }
     }
+
+    public class FieldTableCalc : TableBase<FieldTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.Field;
+
+        public override FieldTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

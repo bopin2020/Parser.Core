@@ -31,4 +31,14 @@ namespace Parser.Core.Dotnet.Tables
         public int PermissionSet { get; set; }
 
     }
+
+    public class DeclSecurityTableCalc : TableBase<DeclSecurityTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.DeclSecurity;
+
+        public override DeclSecurityTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

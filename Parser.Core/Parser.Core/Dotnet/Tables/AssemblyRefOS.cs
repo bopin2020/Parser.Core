@@ -20,4 +20,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int AssemblyRef { get; set; }
     }
+
+    public class AssemblyRefOSCalc : TableBase<AssemblyRefOS>
+    {
+        public override MetadataTableType Type => MetadataTableType.AssemblyRefOS;
+
+        public override AssemblyRefOS Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

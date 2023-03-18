@@ -26,4 +26,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Field { get; set; }
     }
+
+    public class FieldRVACalc : TableBase<FieldRVA>
+    {
+        public override MetadataTableType Type => MetadataTableType.FieldRVA;
+
+        public override FieldRVA Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

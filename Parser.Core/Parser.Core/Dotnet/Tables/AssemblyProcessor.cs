@@ -17,4 +17,14 @@ namespace Parser.Core.Dotnet.Tables
     {
         public int Processor { get; set; }
     }
+
+    public class AssemblyProcessorCalc : TableBase<AssemblyProcessor>
+    {
+        public override MetadataTableType Type => MetadataTableType.AssemblyProcessor;
+
+        public override AssemblyProcessor Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

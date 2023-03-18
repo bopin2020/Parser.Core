@@ -21,4 +21,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Signature { get; set; }
     }
+
+    public class TypeSpecCalc : TableBase<TypeSpec>
+    {
+        public override MetadataTableType Type => MetadataTableType.TypeSpec;
+
+        public override TypeSpec Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

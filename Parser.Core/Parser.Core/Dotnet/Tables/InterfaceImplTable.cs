@@ -23,4 +23,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int Interface { get; set; }
     }
+
+    public class InterfaceImplTableCalc : TableBase<InterfaceImplTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.InterfaceImpl;
+
+        public override InterfaceImplTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

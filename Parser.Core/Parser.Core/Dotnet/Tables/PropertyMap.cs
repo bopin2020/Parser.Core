@@ -24,4 +24,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int PropertyList { get; set; }
     }
+
+    public class PropertyMapCalc : TableBase<PropertyMap>
+    {
+        public override MetadataTableType Type => MetadataTableType.PropertyMap;
+
+        public override PropertyMap Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }

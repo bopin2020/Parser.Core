@@ -20,4 +20,14 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public int EnclosingClass { get; set; }
     }
+
+    public class NestedClassTableCalc : TableBase<NestedClassTable>
+    {
+        public override MetadataTableType Type => MetadataTableType.NestedClass;
+
+        public override NestedClassTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            throw new Exception();
+        }
+    }
 }
