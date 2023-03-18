@@ -82,7 +82,7 @@
     /// <summary>
     /// Flags for fields
     /// </summary>
-    public enum FieldAttributes
+    public enum FieldAttributes : ushort
     {
         #region FieldAccessMask
 

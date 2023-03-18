@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Parser.Core.Dotnet.Bitmasks;
@@ -36,11 +37,14 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into the String heap
         /// </summary>
-        public int Name { get; set; }
+        public dynamic Name { get; set; }
+
+        public string StringName { get; set; }
+
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
-        public int Signature { get; set; }
+        public dynamic Signature { get; set; }
     }
 
     public class FieldTableCalc : TableBase<FieldTable>
@@ -49,7 +53,18 @@ namespace Parser.Core.Dotnet.Tables
 
         public override FieldTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            FieldTable fieldTable = new FieldTable();
+            fieldTable.Flags = (FieldAttributes)Marshal.ReadInt16(baseAddr, offset);
+            offset += 2;
+
+            fieldTable.Name = CheckIndexFromStringStream(parser, baseAddr, ref offset, fieldTable.Name);
+            fieldTable.Signature = CheckIndexFromBlobStream(parser, baseAddr, ref offset, fieldTable.Signature);
+
+            fieldTable.StringName = Marshal.PtrToStringAnsi(parser.StringStreamAddr + fieldTable.Name);
+            Position = offset;
+
+            return fieldTable;
         }
     }
 }

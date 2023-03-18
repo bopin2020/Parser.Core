@@ -18,6 +18,7 @@ namespace Parser.Core.Dotnet.Tables
 
             {MetadataTableType.ClassLayout,typeof(ClassLayoutTableCalc) },
             {MetadataTableType.Constant,typeof(ConstantTableCalc) },
+            {MetadataTableType.Field,typeof(FieldTableCalc) },
 
             {MetadataTableType.MethodDef,typeof(MethodDefTableCalc) },
             {MetadataTableType.Module,typeof(ModuleCalc) },
