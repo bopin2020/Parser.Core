@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,11 +34,11 @@ namespace Parser.Core.Dotnet.Tables
         /// an index into the Param, Field, or Property table; more precisely, a
         ///HasConstant(§II.24.2.6) coded index
         /// </summary>
-        public int Parent { get; set; }
+        public dynamic Parent { get; set; }
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
-        public int Value { get; set; }
+        public dynamic Value { get; set; }
     }
 
     public class ConstantTableCalc : TableBase<ConstantTable>
@@ -46,7 +47,18 @@ namespace Parser.Core.Dotnet.Tables
 
         public override ConstantTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            ConstantTable constant = new ConstantTable();
+            constant.Type = (ElementType)Marshal.ReadByte(baseAddr + offset);
+            offset += 1;
+            constant.PaddingZero = 0x00;
+            offset += 1;
+
+
+            constant.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, constant.Parent);
+            constant.Value = CheckIndexFromWhatever(parser, baseAddr, ref offset, constant.Value);
+            Position = offset;
+            return constant;
         }
     }
 }

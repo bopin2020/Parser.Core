@@ -21,12 +21,12 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into the TypeDef table
         /// </summary>
-        public int Parent { get; set; }
+        public dynamic Parent { get; set; }
 
         /// <summary>
         /// an index into the Event table
         /// </summary>
-        public int EventList { get; set; }
+        public dynamic EventList { get; set; }
     }
 
     public class EventMapTableCalc : TableBase<EventMapTable>
@@ -35,7 +35,12 @@ namespace Parser.Core.Dotnet.Tables
 
         public override EventMapTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            EventMapTable eventMap = new EventMapTable();
+            eventMap.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, eventMap.Parent);
+            eventMap.EventList = CheckIndexFromWhatever(parser, baseAddr, ref offset, eventMap.EventList);
+            Position = offset;
+            return eventMap;
         }
     }
 }

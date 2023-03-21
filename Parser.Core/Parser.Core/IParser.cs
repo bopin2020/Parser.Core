@@ -54,6 +54,16 @@ namespace Parser.Core
             return new IntPtr(ori.ToInt64() + offset);
         }
 
+        public IntPtr GetOffset(IntPtr ori, uint offset)
+        {
+            return new IntPtr(ori.ToInt64() + offset);
+        }
+
+        public IntPtr GetOffset(IntPtr ori, long offset)
+        {
+            return new IntPtr(ori.ToInt64() + offset);
+        }
+
         public enum ParserStatus
         {
             None,

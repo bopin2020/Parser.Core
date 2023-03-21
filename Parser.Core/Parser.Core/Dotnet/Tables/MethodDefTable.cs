@@ -25,7 +25,7 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// 
         /// </summary>
-        public int RVA { get; set; }
+        public uint RVA { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -37,6 +37,9 @@ namespace Parser.Core.Dotnet.Tables
         /// an index into the String heap
         /// </summary>
         public dynamic Name { get; set; }
+
+        public string StringName { get; set; }
+
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
@@ -55,40 +58,19 @@ namespace Parser.Core.Dotnet.Tables
         {
             int offset = 0;
             MethodDefTable methodDef = new MethodDefTable();
-            methodDef.RVA = Marshal.ReadInt32(baseAddr + offset);
+            methodDef.RVA = ReadUInt32(baseAddr + offset);
             offset += 4;
-
-            methodDef.ImplFlags = (MethodImplAttributes)Marshal.ReadInt16(baseAddr + offset);
+            methodDef.ImplFlags = (MethodImplAttributes)ReadUInt16(baseAddr + offset);
+            offset += 2;
+            methodDef.Flags = (MethodAttributes)ReadUInt16(baseAddr + offset);
             offset += 2;
 
+            methodDef.Name = CheckIndexFromStringStream(parser, baseAddr, ref offset, methodDef.Name);
+            methodDef.Signature = CheckIndexFromBlobStream(parser, baseAddr, ref offset, methodDef.Signature);
+            methodDef.ParamList = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodDef.ParamList);
 
-            methodDef.Flags = (MethodAttributes)Marshal.ReadInt16(baseAddr + offset);
-            offset += 2;
-
-            if (Marshal.ReadInt16(baseAddr, offset) < parser.GetStringsStream().Length)
-            {
-                methodDef.Name = Marshal.ReadInt16(baseAddr, offset);
-                offset += 2;
-            }
-            else
-            {
-                methodDef.Name = Marshal.ReadInt32(baseAddr, offset);
-                offset += 4;
-            }
-
-
-
-            if (Marshal.ReadInt16(baseAddr, offset) < parser.GetBlobStream().Length)
-            {
-                methodDef.Signature = Marshal.ReadInt16(baseAddr, offset);
-                offset += 2;
-            }
-            else
-            {
-                methodDef.Signature = Marshal.ReadInt32(baseAddr, offset);
-                offset += 4;
-            }
-
+            methodDef.StringName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,methodDef.Name));
+            Position = offset;
             return methodDef;
         }
     }

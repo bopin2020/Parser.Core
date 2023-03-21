@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,18 +31,18 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// packing size
         /// </summary>
-        public short PackingSize { get; set; }
+        public ushort PackingSize { get; set; }
         /// <summary>
         /// .size = 0 not mean the class has zero size.
         /// It means that no .size direcive was specified at definition time
         /// in which case, the actual size is calculated from the field types, taking account of
         ///packing size(default or specified) and natural alignment on the target, runtime platform
         /// </summary>
-        public int ClassSize { get; set; }
+        public uint ClassSize { get; set; }
         /// <summary>
         /// an index into the TypeDef table
         /// </summary>
-        public int Parent { get; set; }
+        public dynamic Parent { get; set; }
     }
 
     public class ClassLayoutTableCalc : TableBase<ClassLayoutTable>
@@ -50,7 +51,19 @@ namespace Parser.Core.Dotnet.Tables
 
         public override ClassLayoutTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            ClassLayoutTable classLayoutTable = new ClassLayoutTable();
+
+            classLayoutTable.PackingSize = ReadUInt16(baseAddr + offset);
+            offset += 2;
+
+            classLayoutTable.ClassSize = ReadUInt32(baseAddr + offset);
+            offset += 4;
+
+            classLayoutTable.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, classLayoutTable.Parent,parser.GetTableRows(MetadataTableType.TypeDef));
+            Position = offset;
+
+            return classLayoutTable;
         }
     }
 }

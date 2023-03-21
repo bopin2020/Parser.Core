@@ -17,11 +17,11 @@ namespace Parser.Core.Dotnet.Tables
     [MetadataTableLevel(MetadataTableLevel.CLIIgnore)]
     public struct AssemblyOS
     {
-        public int OSPlatformID { get; set; }
+        public uint OSPlatformID { get; set; }
 
-        public int OSMajorVersion { get; set; }
+        public uint OSMajorVersion { get; set; }
 
-        public int OSMinorVersion { get; set; }
+        public uint OSMinorVersion { get; set; }
     }
 
     public class AssemblyOSCalc : TableBase<AssemblyOS>
@@ -30,7 +30,14 @@ namespace Parser.Core.Dotnet.Tables
 
         public override AssemblyOS Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            AssemblyOS assemblyOS = new AssemblyOS();
+            assemblyOS.OSPlatformID = ReadUInt32(baseAddr + offset); offset += 4;
+            assemblyOS.OSMajorVersion = ReadUInt32(baseAddr + offset); offset += 4;
+            assemblyOS.OSMinorVersion = ReadUInt32(baseAddr + offset); offset += 4;
+
+            Position = offset;
+            return assemblyOS;
         }
     }
 }

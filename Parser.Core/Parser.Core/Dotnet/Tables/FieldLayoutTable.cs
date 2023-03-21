@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,15 +18,15 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// 
         /// </summary>
-        public int Offset { get; set; }
+        public uint Offset { get; set; }
         /// <summary>
         /// an index into the Field table
         /// </summary>
-        public int Field { get; set; }
+        public dynamic Field { get; set; }
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
-        public int Signature { get; set; }
+        public dynamic Signature { get; set; }
     }
 
     public class FieldLayoutTableCalc : TableBase<FieldLayoutTable>
@@ -34,7 +35,17 @@ namespace Parser.Core.Dotnet.Tables
 
         public override FieldLayoutTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            FieldLayoutTable fieldLayout = new FieldLayoutTable();
+
+            fieldLayout.Offset = ReadUInt32(baseAddr + offset);
+            offset += 4;
+
+            fieldLayout.Field = CheckIndexFromWhatever(parser, baseAddr, ref offset, fieldLayout.Field);
+            fieldLayout.Signature = CheckIndexFromBlobStream(parser, baseAddr, ref offset, fieldLayout.Signature);
+            Position = offset;
+
+            return fieldLayout;
         }
     }
 }

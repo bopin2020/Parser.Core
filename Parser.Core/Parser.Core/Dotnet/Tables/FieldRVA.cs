@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
@@ -20,11 +21,11 @@ namespace Parser.Core.Dotnet.Tables
         /// RVA shall be non-zero
         /// RVA shall point into the current module’s data area (not its metadata area)
         /// </summary>
-        public int RVA { get; set; }
+        public uint RVA { get; set; }
         /// <summary>
         /// an index into the Field table
         /// </summary>
-        public int Field { get; set; }
+        public dynamic Field { get; set; }
     }
 
     public class FieldRVACalc : TableBase<FieldRVA>
@@ -33,7 +34,13 @@ namespace Parser.Core.Dotnet.Tables
 
         public override FieldRVA Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            FieldRVA fieldRva = new FieldRVA();
+            fieldRva.RVA = ReadUInt32(baseAddr + offset);
+            offset += 4;
+            fieldRva.Field = CheckIndexFromWhatever(parser, baseAddr, ref offset, fieldRva.Field);
+            Position = offset;
+            return fieldRva;
         }
     }
 }

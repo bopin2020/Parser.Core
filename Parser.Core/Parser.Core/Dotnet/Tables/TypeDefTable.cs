@@ -55,20 +55,62 @@ namespace Parser.Core.Dotnet.Tables
         {
             int offset = 0;
             TypeDefTable typeDefTable = new TypeDefTable();
-            typeDefTable.Flags = (TypeAttributes)Marshal.ReadInt32(baseAddr + offset);
+            typeDefTable.Flags = (TypeAttributes)ReadUInt32(baseAddr + offset);
             offset += 4;
 
             typeDefTable.TypeName = CheckIndexFromStringStream(parser, baseAddr, ref offset, typeDefTable.TypeName);
             typeDefTable.TypeNamespace = CheckIndexFromStringStream(parser, baseAddr, ref offset, typeDefTable.TypeNamespace);
-            typeDefTable.Extends = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.Extends, 65536);
-            typeDefTable.FieldList = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.FieldList, 65536);
-            typeDefTable.MethodList = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.MethodList, 65536);
+            typeDefTable.Extends = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.Extends);
+            //  Extends (index into TypeDef, TypeRef or TypeSpec table; more precisely, a TypeDefOrRef coded index)
+            // 低2bit 是那张表的索引
+            // TypeDef  00
+            // TypeRef  01
+            // TypeSpec 10
+            // 剩余14bit 是索引长度
+            var result = SpecifiedTable(typeDefTable.Extends, out int len);
+            //if (typeDefTable.Extends > parser.GetTableRows(result))
+            //{
+            //    offset -= 4;
+            //    typeDefTable.Extends = ReadUInt16(baseAddr + offset);
+            //    offset += 2;
+            //}
 
-            typeDefTable.StringTypeName = Marshal.PtrToStringAnsi(parser.StringStreamAddr + typeDefTable.TypeName);
-            typeDefTable.StringTypeNamespace = Marshal.PtrToStringAnsi(parser.StringStreamAddr + typeDefTable.TypeNamespace);
+            typeDefTable.FieldList = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.FieldList);
+            typeDefTable.MethodList = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.MethodList);
+
+            typeDefTable.StringTypeName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,typeDefTable.TypeName));
+            typeDefTable.StringTypeNamespace = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,typeDefTable.TypeNamespace));
 
             Position = offset;
             return typeDefTable;
+        }
+
+        private MetadataTableType SpecifiedTable(dynamic extends,out int index)
+        {
+            index = 100;
+            if(extends == 0) { return MetadataTableType.TypeDef; }
+
+            char[] tables = Convert.ToString(extends, 2).ToCharArray();
+            Array.Reverse(tables);
+            byte[] len = new byte[tables.Length - 2];
+            // 二进制字符串 转换为字节数组  转为整数
+
+            if (tables[0] == '0' && tables[1] == '0')
+            {
+                return MetadataTableType.TypeDef;
+            }
+            else if (tables[0] == '1' && tables[1] == '0')
+            {
+                return MetadataTableType.TypeRef;
+            }
+            else if (tables[0] == '1' && tables[1] == '0')
+            {
+                return MetadataTableType.TypeSpec;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("解析错误");
+            }
         }
     }
 }

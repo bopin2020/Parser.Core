@@ -14,11 +14,11 @@ namespace Parser.Core.Dotnet.Tables
         /// an index into the TypeDef table
         /// 
         /// </summary>
-        public int NestedClass { get; set; }
+        public dynamic NestedClass { get; set; }
         /// <summary>
         /// an index into the TypeDef table
         /// </summary>
-        public int EnclosingClass { get; set; }
+        public dynamic EnclosingClass { get; set; }
     }
 
     public class NestedClassTableCalc : TableBase<NestedClassTable>
@@ -27,7 +27,13 @@ namespace Parser.Core.Dotnet.Tables
 
         public override NestedClassTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            NestedClassTable nestedClassTable = new NestedClassTable();
+            nestedClassTable.NestedClass = CheckIndexFromWhatever(parser, baseAddr, ref offset, nestedClassTable.NestedClass);
+            nestedClassTable.EnclosingClass = CheckIndexFromWhatever(parser, baseAddr, ref offset, nestedClassTable.EnclosingClass);
+
+            Position = offset;
+            return nestedClassTable;
         }
     }
 }

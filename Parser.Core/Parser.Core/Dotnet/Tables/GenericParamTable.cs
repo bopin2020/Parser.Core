@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Parser.Core.Dotnet.Bitmasks;
@@ -15,7 +16,7 @@ namespace Parser.Core.Dotnet.Tables
         /// the 2-byte index of the generic parameter, numbered left-to-right, from
         /// zero
         /// </summary>
-        public short Number { get; set; }
+        public ushort Number { get; set; }
         /// <summary>
         /// a 2-byte bitmask of type GenericParamAttributes
         /// </summary>
@@ -24,13 +25,15 @@ namespace Parser.Core.Dotnet.Tables
         /// an index into the TypeDef or MethodDef table, specifying the Type or
         /// Method to which this generic parameter applies
         /// </summary>
-        public int Owner { get; set; }
+        public dynamic Owner { get; set; }
 
         /// <summary>
         /// a non-null index into the String heap, giving the name for the generic
         /// parameter
         /// </summary>
-        public int Name { get; set; }
+        public dynamic Name { get; set; }
+
+        public string StringName { get; set; }
     }
 
     public class GenericParamTableCalc : TableBase<GenericParamTable>
@@ -39,7 +42,16 @@ namespace Parser.Core.Dotnet.Tables
 
         public override GenericParamTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            GenericParamTable genericParam = new GenericParamTable();
+            genericParam.Number = ReadUInt16(baseAddr + offset); offset += 2;
+            genericParam.Flags = (GenericParamAttributes)ReadUInt16(baseAddr + offset); offset += 2;
+            genericParam.Owner = CheckIndexFromWhatever(parser,baseAddr,ref offset, genericParam.Owner);
+            genericParam.Name = CheckIndexFromWhatever(parser,baseAddr,ref offset, genericParam.Name);
+            genericParam.StringName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr, genericParam.Name));
+
+            Position = offset;
+            return genericParam;
         }
     }
 }

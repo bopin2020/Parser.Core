@@ -65,6 +65,8 @@ namespace Parser.Core
 
         }
 
+        public int MetadataSize => _imageCore20Header.Metadata.MetadataSize;
+
         private int Padding4Bytes(string name)
         {
             return Padding4Bytes(name.Length);
@@ -238,6 +240,11 @@ namespace Parser.Core
         public byte[] GetUSStream() => GetStream(_USstream);
         public byte[] GetGUIDStream() => GetStream(_GUIDstream);
         public byte[] GetBlobStream() => GetStream(_Blobstream);
+
+        public int GetTableRows(MetadataTableType type)
+        {
+            return _rowsLazy.Value.Where(x => x.Type == type).FirstOrDefault().RowLength;
+        }
 
         public IntPtr StringStreamAddr
         {

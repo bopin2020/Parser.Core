@@ -15,8 +15,9 @@ namespace Parser.Test
         public void Test1()
         {
             // Rubeus.exe
+            // Seatbelt
             // msgnet.exe
-            string testFramework = @"D:\Desktop\petools\sharp\msgnet.exe";
+            string testFramework = @"D:\Desktop\petools\sharp\Rubeus.exe";
             DotnetParser dotnetParser = DotnetParser.LoadFile(testFramework);
             dotnetParser.DisposeCallback.Push(() => Console.WriteLine(""));
             dotnetParser.DisposeCallback.Push(() => Console.WriteLine(""));

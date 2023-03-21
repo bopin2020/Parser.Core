@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -33,15 +34,17 @@ namespace Parser.Core.Dotnet.Tables
         /// However, it only ever indexes the
         /// MethodDef table, since Field export is not supported
         /// </summary>
-        public int MemberForwarded { get; set; }
+        public dynamic MemberForwarded { get; set; }
         /// <summary>
         /// an index into the String heap
-        public int ImportName { get; set; }
+        public dynamic ImportName { get; set; }
+
+        public string StringImportName { get; set; }
 
         /// <summary>
         /// an index into the ModuleRef table
         /// </summary>
-        public int ImportScope { get; set; }
+        public dynamic ImportScope { get; set; }
     }
 
     public class ImplMapTableCalc : TableBase<ImplMapTable>
@@ -50,7 +53,17 @@ namespace Parser.Core.Dotnet.Tables
 
         public override ImplMapTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            ImplMapTable implMap = new ImplMapTable();
+            implMap.MappingFlags = (PInvokeAttributes)ReadUInt16(baseAddr + offset);
+            offset += 2;
+
+            implMap.MemberForwarded = CheckIndexFromWhatever(parser, baseAddr, ref offset, implMap.MemberForwarded);
+            implMap.ImportName = CheckIndexFromStringStream(parser, baseAddr, ref offset, implMap.ImportName);
+            implMap.ImportScope = CheckIndexFromWhatever(parser, baseAddr, ref offset, implMap.ImportScope);
+            implMap.StringImportName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,implMap.ImportName));
+            Position = offset;
+            return implMap;
         }
     }
 }

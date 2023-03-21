@@ -20,7 +20,7 @@ namespace Parser.Core.Dotnet.Tables
         /// an index into the GenericParam table, specifying to which generic
         ///parameter this row refers
         /// </summary>
-        public int Owner { get; set; }
+        public dynamic Owner { get; set; }
         /// <summary>
         /// an index into the TypeDef, TypeRef, or TypeSpec tables, specifying from
         /// which class this generic parameter is constrained to derive
@@ -28,7 +28,7 @@ namespace Parser.Core.Dotnet.Tables
         /// or which interface this
         /// generic parameter is constrained to implement
         /// </summary>
-        public int Constraint { get; set; }
+        public dynamic Constraint { get; set; }
     }
 
     public class GenericParamConstraintCalc : TableBase<GenericParamConstraint>
@@ -37,7 +37,12 @@ namespace Parser.Core.Dotnet.Tables
 
         public override GenericParamConstraint Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            GenericParamConstraint genericParamCons = new GenericParamConstraint();
+            genericParamCons.Owner = CheckIndexFromWhatever(parser, baseAddr, ref offset, genericParamCons.Owner);
+            genericParamCons.Constraint = CheckIndexFromWhatever(parser, baseAddr, ref offset, genericParamCons.Constraint);
+            Position = offset;
+            return genericParamCons;
         }
     }
 }

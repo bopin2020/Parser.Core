@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Parser.Core.Dotnet.Bitmasks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,15 +22,15 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into the TypeDef table
         /// </summary>
-        public int Class { get; set; }
+        public dynamic Class { get; set; }
         /// <summary>
         /// an index into the MethodDef or MemberRef table; more precisely, a MethodDefOrRef
         /// </summary>
-        public int MethodBody { get; set; }
+        public dynamic MethodBody { get; set; }
         /// <summary>
         /// an index into the MethodDef or MemberRef table
         /// </summary>
-        public int MethodDeclaration { get; set; }
+        public dynamic MethodDeclaration { get; set; }
     }
 
     public class MethodImplTableCalc : TableBase<MethodImplTable>
@@ -37,7 +39,13 @@ namespace Parser.Core.Dotnet.Tables
 
         public override MethodImplTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            MethodImplTable methodImplTable = new MethodImplTable();
+            methodImplTable.Class = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodImplTable.Class);
+            methodImplTable.MethodBody = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodImplTable.MethodBody);
+            methodImplTable.MethodDeclaration = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodImplTable.MethodDeclaration);
+            Position = offset;
+            return methodImplTable;
         }
     }
 }

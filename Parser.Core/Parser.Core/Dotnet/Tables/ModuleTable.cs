@@ -17,7 +17,7 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// a 2-byte value, reserved, shall be zero
         /// </summary>
-        public short Generation { get; set; }
+        public ushort Generation { get; set; }
         /// <summary>
         /// an index into the String heap
         /// 
@@ -37,12 +37,12 @@ namespace Parser.Core.Dotnet.Tables
         /// an index into the Guid heap; reserved, shall be zero
         /// 0x0000
         /// </summary>
-        public short EncId { get; set; }
+        public ushort EncId { get; set; }
         /// <summary>
         /// an index into the Guid heap; reserved, shall be zero
         /// 0x0000
         /// </summary>
-        public short EncBaseId { get; set; }
+        public ushort EncBaseId { get; set; }
     }
 
     public class ModuleCalc : TableBase<ModuleTable>
@@ -53,15 +53,15 @@ namespace Parser.Core.Dotnet.Tables
         {
             int offset = 0;
             ModuleTable moduleTable = new ModuleTable();
-            moduleTable.Generation = Marshal.ReadInt16(baseAddr,offset);
+            moduleTable.Generation = ReadUInt16(baseAddr,offset);
             offset += 2;
 
             moduleTable.Name = CheckIndexFromStringStream(parser, baseAddr, ref offset, moduleTable.Name);
             moduleTable.Mvid = CheckIndexFromGUIDStream(parser, baseAddr, ref offset, moduleTable.Mvid);
-            moduleTable.StringName = Marshal.PtrToStringAnsi(parser.StringStreamAddr + moduleTable.Name);
-            moduleTable.EncId = Marshal.ReadInt16(baseAddr,offset);
+            moduleTable.StringName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,moduleTable.Name));
+            moduleTable.EncId = ReadUInt16(baseAddr,offset);
             offset += 2;
-            moduleTable.EncBaseId = Marshal.ReadInt16(baseAddr,offset);
+            moduleTable.EncBaseId = ReadUInt16(baseAddr,offset);
             Position = offset + 2;
             return moduleTable;
         }

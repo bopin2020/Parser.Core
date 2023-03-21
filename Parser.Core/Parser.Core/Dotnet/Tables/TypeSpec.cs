@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Parser.Core.Dotnet.Bitmasks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +21,7 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// index into the Blob heap, where the blob is formatted as specified
         /// </summary>
-        public int Signature { get; set; }
+        public dynamic Signature { get; set; }
     }
 
     public class TypeSpecCalc : TableBase<TypeSpec>
@@ -28,7 +30,11 @@ namespace Parser.Core.Dotnet.Tables
 
         public override TypeSpec Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            TypeSpec typeSpec = new TypeSpec();
+            typeSpec.Signature = CheckIndexFromBlobStream(parser, baseAddr, ref offset, typeSpec.Signature);
+            Position = offset;
+            return typeSpec;
         }
     }
 }

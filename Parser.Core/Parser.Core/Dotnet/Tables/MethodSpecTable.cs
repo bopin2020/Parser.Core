@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,15 +20,15 @@ namespace Parser.Core.Dotnet.Tables
         /// generic method this row refers; that is, which generic method this row is an
         /// instantiation of
         /// </summary>
-        public int Method { get; set; }
+        public dynamic Method { get; set; }
         /// <summary>
         /// an index into the Blob heap holding the signature of this instantiation
         /// </summary>
-        public int Instantiation { get; set; }
+        public dynamic Instantiation { get; set; }
         /// <summary>
         /// an index into the Event or Property table
         /// </summary>
-        public int Association { get; set; }
+        public dynamic Association { get; set; }
     }
 
     public class MethodSpecTableCalc : TableBase<MethodSpecTable>
@@ -36,7 +37,13 @@ namespace Parser.Core.Dotnet.Tables
 
         public override MethodSpecTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            MethodSpecTable methodSpecTable = new MethodSpecTable();
+            methodSpecTable.Method = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodSpecTable.Method);
+            methodSpecTable.Instantiation = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodSpecTable.Instantiation);
+            methodSpecTable.Association = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodSpecTable.Association);
+            Position = offset;
+            return methodSpecTable;
         }
     }
 }

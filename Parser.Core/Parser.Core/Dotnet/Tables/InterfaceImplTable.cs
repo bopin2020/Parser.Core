@@ -17,11 +17,11 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into the TypeDef table
         /// </summary>
-        public int Class { get; set; }
+        public dynamic Class { get; set; }
         /// <summary>
         /// an index into the TypeDef, TypeRef, or TypeSpec table
         /// </summary>
-        public int Interface { get; set; }
+        public dynamic Interface { get; set; }
     }
 
     public class InterfaceImplTableCalc : TableBase<InterfaceImplTable>
@@ -30,7 +30,12 @@ namespace Parser.Core.Dotnet.Tables
 
         public override InterfaceImplTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            InterfaceImplTable interfaceImpl = new InterfaceImplTable();
+            interfaceImpl.Class = CheckIndexFromWhatever(parser, baseAddr, ref offset, interfaceImpl.Class);
+            interfaceImpl.Interface = CheckIndexFromWhatever(parser, baseAddr, ref offset, interfaceImpl.Interface);
+            Position = offset;
+            return interfaceImpl;
         }
     }
 }

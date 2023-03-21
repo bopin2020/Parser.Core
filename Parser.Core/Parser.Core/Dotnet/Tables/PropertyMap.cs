@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Parser.Core.Dotnet.Bitmasks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,11 +20,11 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into the TypeDef table
         /// </summary>
-        public int Parent { get; set; }
+        public dynamic Parent { get; set; }
         /// <summary>
         /// an index into the Property table
         /// </summary>
-        public int PropertyList { get; set; }
+        public dynamic PropertyList { get; set; }
     }
 
     public class PropertyMapCalc : TableBase<PropertyMap>
@@ -31,7 +33,12 @@ namespace Parser.Core.Dotnet.Tables
 
         public override PropertyMap Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            PropertyMap propertyMap = new PropertyMap();
+            propertyMap.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, propertyMap.Parent);
+            propertyMap.PropertyList = CheckIndexFromWhatever(parser, baseAddr, ref offset, propertyMap.PropertyList);
+            Position = offset;
+            return propertyMap;
         }
     }
 }

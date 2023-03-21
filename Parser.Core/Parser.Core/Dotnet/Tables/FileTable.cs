@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using MetadataBitmasks = Parser.Core.Dotnet.Bitmasks;
@@ -26,11 +27,14 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into the String heap
         /// </summary>
-        public int Name { get; set; }
+        public dynamic Name { get; set; }
+
+        public string StringName { get; set; }
+
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
-        public int HashValue { get; set; }
+        public dynamic HashValue { get; set; }
     }
 
     public class FileTableCalc : TableBase<FileTable>
@@ -39,7 +43,17 @@ namespace Parser.Core.Dotnet.Tables
 
         public override FileTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            FileTable file = new FileTable();
+            file.Flags = (MetadataBitmasks.FileAttributes)ReadUInt32(baseAddr + offset); offset += 4;
+
+            file.Name = CheckIndexFromStringStream(parser, baseAddr, ref offset, file.Name);
+            file.HashValue = CheckIndexFromBlobStream(parser, baseAddr, ref offset, file.HashValue);
+
+            file.StringName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,file.Name));
+            Position = offset;
+
+            return file;
         }
     }
 }

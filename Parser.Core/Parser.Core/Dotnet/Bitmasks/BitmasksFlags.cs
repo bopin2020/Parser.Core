@@ -6,7 +6,7 @@
     /// 
     /// ecma page 275
     /// </summary>
-    public enum AssemblyHashAlgorithm : int
+    public enum AssemblyHashAlgorithm : uint
     {
         None = 0x0000,
         /// <summary>
@@ -21,7 +21,7 @@
     /// 
     /// https://www.ntcore.com/files/dotnetformat.htm undocumented AssemblyFlags
     /// </summary>
-    public enum AssemblyFlags : int
+    public enum AssemblyFlags : uint
     {
         /// <summary>
         /// Processor Architecture unspecified
@@ -177,7 +177,7 @@
     /// <summary>
     /// Flags for files
     /// </summary>
-    public enum FileAttributes
+    public enum FileAttributes : uint
     {
         /// <summary>
         /// This is not a resource file
@@ -191,7 +191,7 @@
     /// <summary>
     /// Flags for Generic Parameters [GenericPara mAttributes]
     /// </summary>
-    public enum GenericParamAttributes
+    public enum GenericParamAttributes : ushort
     {
         /// <summary>
         /// These 2 bits contain one of the following values:
@@ -228,7 +228,7 @@
         /// </summary>
         DefaultConstructorConstraint = 0x0010
     }
-    public enum PInvokeAttributes
+    public enum PInvokeAttributes : ushort
     {
         /// <summary>
         /// PInvoke is to use the member name as specified
@@ -261,7 +261,7 @@
     /// <summary>
     /// Flags for ManifestResource
     /// </summary>
-    public enum ManifestResourceAttributes
+    public enum ManifestResourceAttributes : uint
     {
         /// <summary>
         /// These 3 bits contain one of the following values:
@@ -450,7 +450,7 @@
     /// <summary>
     /// Flags for MethodSemantics
     /// </summary>
-    public enum MethodSemanticsAttributes
+    public enum MethodSemanticsAttributes : ushort
     {
         /// <summary>
         /// Setter for property

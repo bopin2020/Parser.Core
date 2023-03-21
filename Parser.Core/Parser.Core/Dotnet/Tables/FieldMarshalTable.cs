@@ -24,11 +24,11 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into Field or Param table; more precisely   HasFieldMarshal coded index
         /// </summary>
-        public int Parent { get; set; }
+        public dynamic Parent { get; set; }
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
-        public int NativeType { get; set; }
+        public dynamic NativeType { get; set; }
     }
 
     public class FieldMarshalTableCalc : TableBase<FieldMarshalTable>
@@ -37,7 +37,14 @@ namespace Parser.Core.Dotnet.Tables
 
         public override FieldMarshalTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            FieldMarshalTable fieldMarshal = new FieldMarshalTable();
+
+            fieldMarshal.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, fieldMarshal.Parent);
+            fieldMarshal.NativeType = CheckIndexFromWhatever(parser, baseAddr, ref offset, fieldMarshal.NativeType);
+            Position = offset;
+
+            return fieldMarshal;
         }
     }
 }

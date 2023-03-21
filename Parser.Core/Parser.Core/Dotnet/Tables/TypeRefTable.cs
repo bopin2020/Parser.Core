@@ -46,11 +46,11 @@ namespace Parser.Core.Dotnet.Tables
         {
             int offset = 0;
             TypeRefTable typeref = new TypeRefTable();
-            typeref.ResolutionScope = CheckIndexFromStringStream(parser,baseAddr,ref offset, typeref.ResolutionScope);
+            typeref.ResolutionScope = CheckIndexFromWhatever(parser,baseAddr,ref offset, typeref.ResolutionScope);
             typeref.TypeName = CheckIndexFromStringStream(parser,baseAddr,ref offset, typeref.TypeName);
             typeref.TypeNamespace = CheckIndexFromStringStream(parser,baseAddr,ref offset, typeref.TypeNamespace);
-            typeref.StringTypeName = Marshal.PtrToStringAnsi(parser.StringStreamAddr + typeref.TypeName);
-            typeref.StringTypeNamespace = Marshal.PtrToStringAnsi(parser.StringStreamAddr + typeref.TypeNamespace);
+            typeref.StringTypeName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,typeref.TypeName));
+            typeref.StringTypeNamespace = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,typeref.TypeNamespace));
             Position = offset;
             return typeref;
         }

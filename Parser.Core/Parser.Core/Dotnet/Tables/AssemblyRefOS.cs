@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,15 +11,15 @@ namespace Parser.Core.Dotnet.Tables
     [MetadataTableLevel(MetadataTableLevel.CLIIgnore)]
     public struct AssemblyRefOS
     {
-        public int OSPlatformID { get; set; }
+        public uint OSPlatformID { get; set; }
 
-        public int OSMajorVersion { get; set; }
+        public uint OSMajorVersion { get; set; }
 
-        public int OSMinorVersion { get; set; }
+        public uint OSMinorVersion { get; set; }
         /// <summary>
         /// an index into the AssemblyRef table
         /// </summary>
-        public int AssemblyRef { get; set; }
+        public dynamic AssemblyRef { get; set; }
     }
 
     public class AssemblyRefOSCalc : TableBase<AssemblyRefOS>
@@ -27,7 +28,16 @@ namespace Parser.Core.Dotnet.Tables
 
         public override AssemblyRefOS Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            AssemblyRefOS assemblyRefOS = new AssemblyRefOS();
+            assemblyRefOS.OSPlatformID = ReadUInt32(baseAddr + offset); offset += 4;
+            assemblyRefOS.OSMajorVersion = ReadUInt32(baseAddr + offset); offset += 4;
+            assemblyRefOS.OSMinorVersion = ReadUInt32(baseAddr + offset); offset += 4;
+
+            assemblyRefOS.AssemblyRef = CheckIndexFromWhatever(parser, baseAddr, ref offset, assemblyRefOS.AssemblyRef);
+
+            Position = offset;
+            return assemblyRefOS;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +16,10 @@ namespace Parser.Core.Dotnet.Tables
     [MetadataTableLevel(MetadataTableLevel.CLIIgnore)]
     public struct AssemblyProcessor
     {
-        public int Processor { get; set; }
+        /// <summary>
+        /// a 4-byte constant
+        /// </summary>
+        public uint Processor { get; set; }
     }
 
     public class AssemblyProcessorCalc : TableBase<AssemblyProcessor>
@@ -24,7 +28,13 @@ namespace Parser.Core.Dotnet.Tables
 
         public override AssemblyProcessor Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            AssemblyProcessor assemblyProcessor = new AssemblyProcessor();
+            assemblyProcessor.Processor = ReadUInt32(baseAddr + offset);
+            offset += 4;
+
+            Position = offset;
+            return assemblyProcessor;
         }
     }
 }

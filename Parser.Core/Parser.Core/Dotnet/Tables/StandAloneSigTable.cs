@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Parser.Core.Dotnet.Bitmasks;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,7 +34,7 @@ namespace Parser.Core.Dotnet.Tables
         /// a method  方法体内 每一条calli  CIL 指令都会在 StandAloneSig Table 生成一行
         /// local variables   .locals directive   IILAsm generates a row in the StandAloneSig
         /// </summary>
-        public int Signature { get; set; }
+        public dynamic Signature { get; set; }
     }
 
     public class StandAloneSigTableCalc : TableBase<StandAloneSigTable>
@@ -41,7 +43,11 @@ namespace Parser.Core.Dotnet.Tables
 
         public override StandAloneSigTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            StandAloneSigTable standAloneSigTable = new StandAloneSigTable();
+            standAloneSigTable.Signature = CheckIndexFromBlobStream(parser, baseAddr, ref offset, standAloneSigTable.Signature);
+            Position = offset;
+            return standAloneSigTable;
         }
     }
 }

@@ -55,13 +55,13 @@ namespace Parser.Core.Dotnet.Tables
         {
             int offset = 0;
             FieldTable fieldTable = new FieldTable();
-            fieldTable.Flags = (FieldAttributes)Marshal.ReadInt16(baseAddr, offset);
+            fieldTable.Flags = (FieldAttributes)ReadUInt16(baseAddr, offset);
             offset += 2;
 
             fieldTable.Name = CheckIndexFromStringStream(parser, baseAddr, ref offset, fieldTable.Name);
             fieldTable.Signature = CheckIndexFromBlobStream(parser, baseAddr, ref offset, fieldTable.Signature);
 
-            fieldTable.StringName = Marshal.PtrToStringAnsi(parser.StringStreamAddr + fieldTable.Name);
+            fieldTable.StringName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,fieldTable.Name));
             Position = offset;
 
             return fieldTable;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,16 +20,16 @@ namespace Parser.Core.Dotnet.Tables
     [MetadataTableLevel(MetadataTableLevel.Important)]
     public struct DeclSecurityTable
     {
-        public short Action { get; set; }
+        public ushort Action { get; set; }
         /// <summary>
         /// an index into the TypeDef, MethodDef, or Assembly table; more precisely, a
         /// HasDeclSecurity
         /// </summary>
-        public int Parent { get; set; }
+        public dynamic Parent { get; set; }
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
-        public int PermissionSet { get; set; }
+        public dynamic PermissionSet { get; set; }
 
     }
 
@@ -38,7 +39,14 @@ namespace Parser.Core.Dotnet.Tables
 
         public override DeclSecurityTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            DeclSecurityTable declSecurity = new DeclSecurityTable();
+            declSecurity.Action = ReadUInt16(baseAddr + offset);
+            offset += 2;
+            declSecurity.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, declSecurity.Parent);
+            declSecurity.PermissionSet = CheckIndexFromBlobStream(parser, baseAddr, ref offset, declSecurity.PermissionSet);
+            Position = offset;
+            return declSecurity;
         }
     }
 }

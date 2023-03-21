@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Parser.Core.Dotnet.Bitmasks;
@@ -27,7 +28,10 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into the String heap
         /// </summary>
-        public int Name { get; set; }
+        public dynamic Name { get; set; }
+
+        public string StringName { get; set; }
+
         /// <summary>
         /// an index into the Blob heap
         /// 
@@ -35,7 +39,7 @@ namespace Parser.Core.Dotnet.Tables
         ///not index a TypeDef or TypeRef table—instead it indexes the signature in the Blob
         ///heap of the Property
         /// </summary>
-        public int Type { get; set; }
+        public dynamic Type { get; set; }
 
     }
 
@@ -45,7 +49,15 @@ namespace Parser.Core.Dotnet.Tables
 
         public override PropertyTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-            throw new Exception();
+            int offset = 0;
+            PropertyTable property = new PropertyTable();
+            property.Flags = (PropertyAttributes)ReadUInt16(baseAddr + offset);
+            offset += 2;
+            property.Name = CheckIndexFromStringStream(parser, baseAddr, ref offset, property.Name);
+            property.StringName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr, property.Name));
+            property.Type = CheckIndexFromBlobStream(parser, baseAddr, ref offset, property.Type);
+            Position = offset;
+            return property;
         }
     }
 }
