@@ -1,6 +1,7 @@
 ﻿using Parser.Core.Dotnet;
 using Parser.Core.Dotnet.Tables;
 using Parser.Core.PE;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -285,6 +286,15 @@ namespace Parser.Core
         public static DotnetParser LoadFromStream(Stream stream) => new DotnetParserUS(stream);
         public static DotnetParser LoadFile(string filename) => new DotnetParserUS(filename);
 
+        public IEnumerable<T> GetMetadataTable<T>(MetadataTableType type)
+        {
+            List<T> tmp = new List<T>();
+            foreach (var item in _rowsLazy.Value.Where(x => x.Type == type).FirstOrDefault().Rows.Value)
+            {
+                tmp.Add((T)item);
+            }
+            return tmp;
+        }
     }
 
     public class DotnetParserUS : DotnetParser

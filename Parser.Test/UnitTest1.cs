@@ -1,4 +1,5 @@
 using Parser.Core;
+using Parser.Core.Dotnet.Tables;
 using Parser.Core.Utilites;
 using System.Diagnostics;
 
@@ -27,6 +28,15 @@ namespace Parser.Test
             //Console.WriteLine(dotnetParser.GetUSStreamUTF8());
             //Console.WriteLine(dotnetParser.GetBlobStream().HexDump());
             //dotnetParser.OriginalData.HexDump();
+
+            // pinvoke api
+            //var imports = dotnetParser.GetMetadataTable<ModuleRef>(MetadataTableType.ModuleRef);
+
+            //foreach (var item in dotnetParser.GetMetadataTable<ImplMapTable>(MetadataTableType.ImplMap))
+            //{
+            //    Console.WriteLine(imports.ToArray()[item.ImportScope].StringName + "\t"  + item.StringImportName);
+            //}
+
             dotnetParser.MetadataAddr.MemoryDump(48);
             Assert.IsTrue(dotnetParser.IsDotnetPE());
             Assert.IsTrue(dotnetParser.TryDispose(out _));
