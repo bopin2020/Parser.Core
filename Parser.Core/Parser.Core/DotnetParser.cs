@@ -306,7 +306,7 @@ namespace Parser.Core
         public DotnetParserUS(Stream stream) : base(stream)
         {
         }
-
+         
         public DotnetParserUS(string filename) : base(filename)
         {
         }
