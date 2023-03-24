@@ -30,12 +30,12 @@ namespace Parser.Test
             //dotnetParser.OriginalData.HexDump();
 
             // pinvoke api
-            //var imports = dotnetParser.GetMetadataTable<ModuleRef>(MetadataTableType.ModuleRef);
+            var imports = dotnetParser.GetMetadataTable<ModuleRef>(MetadataTableType.ModuleRef);
 
-            //foreach (var item in dotnetParser.GetMetadataTable<ImplMapTable>(MetadataTableType.ImplMap))
-            //{
-            //    Console.WriteLine(imports.ToArray()[item.ImportScope].StringName + "\t"  + item.StringImportName);
-            //}
+            foreach (var item in dotnetParser.GetMetadataTable<ImplMapTable>(MetadataTableType.ImplMap))
+            {
+                Console.WriteLine(imports.ToArray()[item.ImportScope].StringName + "\t" + item.StringImportName);
+            }
 
             dotnetParser.MetadataAddr.MemoryDump(48);
             Assert.IsTrue(dotnetParser.IsDotnetPE());
@@ -57,6 +57,15 @@ namespace Parser.Test
             string testFramework = @"c:\windows\system32\cmd.exe";
             PEParser parser = new PEParserUS(testFramework);
             Console.WriteLine(parser.GetDateStamp());
+            Assert.Pass();
+        }
+
+        [Test]
+        public void ParserBit()
+        {
+            char[] tables = Convert.ToString(100, 2).ToCharArray();
+            var result = tables[^3..];
+            uint res = Convert.ToUInt32(new string(result), 2);
             Assert.Pass();
         }
     }

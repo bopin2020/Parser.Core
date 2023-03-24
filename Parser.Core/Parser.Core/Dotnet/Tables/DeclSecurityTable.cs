@@ -24,8 +24,14 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into the TypeDef, MethodDef, or Assembly table; more precisely, a
         /// HasDeclSecurity
+        /// HasDeclSecurity: 2 bits to encode tag
+        /// 00 TypeDef
+        /// 01 MethodDef
+        /// 10 Assembly
         /// </summary>
         public dynamic Parent { get; set; }
+        public MetadataTableType ParentType { get; set; }
+        public uint ParentIndex { get; set; }
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
@@ -44,6 +50,10 @@ namespace Parser.Core.Dotnet.Tables
             declSecurity.Action = ReadUInt16(baseAddr + offset);
             offset += 2;
             declSecurity.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, declSecurity.Parent);
+
+            declSecurity.ParentType = parser.Bitparser["HasDeclSecurity"].SpecifiedTable(declSecurity.Parent, out int index);
+            declSecurity.ParentIndex = (uint)index;
+
             declSecurity.PermissionSet = CheckIndexFromBlobStream(parser, baseAddr, ref offset, declSecurity.PermissionSet);
             Position = offset;
             return declSecurity;

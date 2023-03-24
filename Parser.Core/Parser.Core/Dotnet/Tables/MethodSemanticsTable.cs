@@ -28,6 +28,8 @@ namespace Parser.Core.Dotnet.Tables
         /// an index into the Event or Property table
         /// </summary>
         public dynamic Association { get; set; }
+        public MetadataTableType AssociationType { get; set; }
+        public uint AssociationIndex { get; set; }
     }
 
     public class MethodSemanticsTableCalc : TableBase<MethodSemanticsTable>
@@ -42,6 +44,8 @@ namespace Parser.Core.Dotnet.Tables
             methodSemanticsTable.Method = CheckIndexFromWhatever(parser,baseAddr,ref offset, methodSemanticsTable.Method);
             methodSemanticsTable.Association = CheckIndexFromWhatever(parser,baseAddr,ref offset, methodSemanticsTable.Association);
 
+            methodSemanticsTable.AssociationType = parser.Bitparser["HasSemantics"].SpecifiedTable(methodSemanticsTable.Association, out int index);
+            methodSemanticsTable.AssociationIndex = (uint)index;
 
             Position = offset;
             return methodSemanticsTable;

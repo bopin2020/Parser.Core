@@ -29,6 +29,8 @@ namespace Parser.Core.Dotnet.Tables
         /// generic parameter is constrained to implement
         /// </summary>
         public dynamic Constraint { get; set; }
+        public MetadataTableType ConstraintType { get; set; }
+        public uint ConstraintIndex { get; set; }
     }
 
     public class GenericParamConstraintCalc : TableBase<GenericParamConstraint>
@@ -41,6 +43,10 @@ namespace Parser.Core.Dotnet.Tables
             GenericParamConstraint genericParamCons = new GenericParamConstraint();
             genericParamCons.Owner = CheckIndexFromWhatever(parser, baseAddr, ref offset, genericParamCons.Owner);
             genericParamCons.Constraint = CheckIndexFromWhatever(parser, baseAddr, ref offset, genericParamCons.Constraint);
+
+            genericParamCons.ConstraintType = parser.Bitparser["TypeDefOrRef"].SpecifiedTable(genericParamCons.Constraint, out int index);
+            genericParamCons.ConstraintIndex = (uint)index;
+
             Position = offset;
             return genericParamCons;
         }

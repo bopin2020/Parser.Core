@@ -35,6 +35,8 @@ namespace Parser.Core.Dotnet.Tables
         /// MethodDef table, since Field export is not supported
         /// </summary>
         public dynamic MemberForwarded { get; set; }
+        public MetadataTableType MemberForwardedType { get; set; }
+        public uint MemberForwardedIndex { get; set; }
         /// <summary>
         /// an index into the String heap
         public dynamic ImportName { get; set; }
@@ -59,6 +61,9 @@ namespace Parser.Core.Dotnet.Tables
             offset += 2;
 
             implMap.MemberForwarded = CheckIndexFromWhatever(parser, baseAddr, ref offset, implMap.MemberForwarded);
+            implMap.MemberForwardedType = parser.Bitparser["MemberForwarded"].SpecifiedTable(implMap.MemberForwarded, out int index);
+            implMap.MemberForwardedIndex = (uint)index;
+
             implMap.ImportName = CheckIndexFromStringStream(parser, baseAddr, ref offset, implMap.ImportName);
             implMap.ImportScope = CheckIndexFromWhatever(parser, baseAddr, ref offset, implMap.ImportScope);
             implMap.StringImportName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,implMap.ImportName));

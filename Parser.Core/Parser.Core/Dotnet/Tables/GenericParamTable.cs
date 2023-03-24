@@ -24,8 +24,15 @@ namespace Parser.Core.Dotnet.Tables
         /// <summary>
         /// an index into the TypeDef or MethodDef table, specifying the Type or
         /// Method to which this generic parameter applies
+        /// 
+        /// 1 bit 
+        /// 0 表示 Type
+        /// 1 Method
+        /// TypeOrMethodDef
         /// </summary>
         public dynamic Owner { get; set; }
+        public MetadataTableType OwnerType { get; set; }
+        public uint OwnerIndex { get; set; }
 
         /// <summary>
         /// a non-null index into the String heap, giving the name for the generic
@@ -47,6 +54,10 @@ namespace Parser.Core.Dotnet.Tables
             genericParam.Number = ReadUInt16(baseAddr + offset); offset += 2;
             genericParam.Flags = (GenericParamAttributes)ReadUInt16(baseAddr + offset); offset += 2;
             genericParam.Owner = CheckIndexFromWhatever(parser,baseAddr,ref offset, genericParam.Owner);
+
+            genericParam.OwnerType = parser.Bitparser["TypeOrMethodDef"].SpecifiedTable(genericParam.Owner, out int index);
+            genericParam.OwnerIndex = (uint)index;
+
             genericParam.Name = CheckIndexFromWhatever(parser,baseAddr,ref offset, genericParam.Name);
             genericParam.StringName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr, genericParam.Name));
 

@@ -30,8 +30,12 @@ namespace Parser.Core.Dotnet.Tables
         /// 
         /// The column called Type is slightly misleading
         /// it actually indexes a constructor method
+        /// 
+        /// 
         /// </summary>
         public dynamic Type { get; set; }
+        public MetadataTableType Type_ { get; set; }
+        public uint Type_Index { get; set; }
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
@@ -40,28 +44,11 @@ namespace Parser.Core.Dotnet.Tables
 
     public class CustomAttributeTableCalc : TableBase<CustomAttributeTable>
     {
+        #region Private Region
+
         private int _MethodDefOrRef;
 
         private int _index;
-
-        public override MetadataTableType Type => MetadataTableType.CustomAttribute;
-
-        public override CustomAttributeTable Create(DotnetParser parser, IntPtr baseAddr)
-        {
-            int offset = 0;
-            if(_index == 124)
-            {
-                Console.Write("");
-            }
-            _index++;
-            CustomAttributeTable customAttr = new CustomAttributeTable();
-            customAttr.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, customAttr.Parent,parser.MetadataSize);
-            customAttr.Type = CheckCustomAttributeType(parser, baseAddr, ref offset, customAttr.Type, CheckMethodDefOrRef(parser));
-            customAttr.Value = CheckIndexFromBlobStream(parser, baseAddr, ref offset, customAttr.Value);
-            Position = offset;
-
-            return customAttr;
-        }
 
         private int CheckMethodDefOrRef(DotnetParser parser)
         {
@@ -74,6 +61,26 @@ namespace Parser.Core.Dotnet.Tables
             }
             return result;
         }
+        #endregion
+
+        public override MetadataTableType Type => MetadataTableType.CustomAttribute;
+
+        public override CustomAttributeTable Create(DotnetParser parser, IntPtr baseAddr)
+        {
+            int offset = 0;
+            CustomAttributeTable customAttr = new CustomAttributeTable();
+            customAttr.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, customAttr.Parent,parser.MetadataSize);
+            customAttr.Type = CheckCustomAttributeType(parser, baseAddr, ref offset, customAttr.Type, CheckMethodDefOrRef(parser));
+
+            customAttr.Type_ = parser.Bitparser["MethodDefOrRef"].SpecifiedTable(customAttr.Type, out int index);
+            customAttr.Type_Index = (uint)index;
+
+            customAttr.Value = CheckIndexFromBlobStream(parser, baseAddr, ref offset, customAttr.Value);
+            Position = offset;
+
+            return customAttr;
+        }
+
 
         /*
          https://www.ntcore.com/files/dotnetformat.htm
@@ -82,11 +89,9 @@ namespace Parser.Core.Dotnet.Tables
         000 保留1
         001 保留2
         010 MethodDef
-        011 MethodRef
+        011 MemberRef
         100 保留2
          */
-
-
         public virtual dynamic CheckCustomAttributeType(DotnetParser parser, IntPtr baseAddr, ref int offset, dynamic item, int index = Constants.IndexLimited)
         {
             ushort flag = PeekData(baseAddr, offset);
@@ -103,6 +108,5 @@ namespace Parser.Core.Dotnet.Tables
 
             return item;
         }
-
     }
 }

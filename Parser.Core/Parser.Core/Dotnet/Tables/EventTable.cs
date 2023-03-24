@@ -36,6 +36,8 @@ namespace Parser.Core.Dotnet.Tables
         /// Event; it is not the Type that owns this event
         /// </summary>
         public dynamic EventType { get; set; }
+        public MetadataTableType EventType_ { get; set; }
+        public uint EventType_Index { get; set; }
     }
 
     public class EventTableCalc : TableBase<EventTable>
@@ -44,7 +46,6 @@ namespace Parser.Core.Dotnet.Tables
 
         public override EventTable Create(DotnetParser parser, IntPtr baseAddr)
         {
-
             int offset = 0;
             EventTable _event = new EventTable();
             _event.EventFlags = (EventAttributes)ReadUInt16(baseAddr + offset);
@@ -54,6 +55,8 @@ namespace Parser.Core.Dotnet.Tables
             _event.StringName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,_event.Name));
 
             _event.EventType = CheckIndexFromWhatever(parser, baseAddr, ref offset, _event.EventType);
+            _event.EventType_ = parser.Bitparser["TypeDefOrRef"].SpecifiedTable(_event.EventType, out int index);
+            _event.EventType_Index = (uint)index;
 
             Position = offset;
             return _event;

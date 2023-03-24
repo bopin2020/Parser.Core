@@ -70,7 +70,6 @@ namespace Parser.Core.Dotnet.Tables
             return item;
         }
 
-
         public ushort PeekData(IntPtr baseAddr, int offset)
         {
             //short result = Marshal.ReadInt16(baseAddr, offset);

@@ -1,4 +1,5 @@
 ﻿using Parser.Core.Dotnet;
+using Parser.Core.Dotnet.Bitmasks;
 using Parser.Core.Dotnet.Tables;
 using Parser.Core.PE;
 using System.Collections.Generic;
@@ -68,6 +69,8 @@ namespace Parser.Core
 
         public int MetadataSize => _imageCore20Header.Metadata.MetadataSize;
 
+        public Dictionary<string, BitParserBase> Bitparser;
+
         private int Padding4Bytes(string name)
         {
             return Padding4Bytes(name.Length);
@@ -100,8 +103,25 @@ namespace Parser.Core
             }
         }
 
+        private void InitBitparser()
+        {
+            Bitparser = new Dictionary<string, BitParserBase>();
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            foreach (var item in assembly.GetTypes())
+            {
+                if(item.IsInterface || item.IsAbstract) { continue; }
+                if(item.IsSubclassOf(typeof(BitParserBase)))
+                {
+                    var instance = Activator.CreateInstance(item) as BitParserBase;
+                    Bitparser.Add(instance.Name,instance);
+                }
+            }
+        }
+
         private void Init()
         {
+            InitBitparser();
+
             IntPtr cor20Addr = new IntPtr(ImageBase.ToInt64() + CLRRuntimeRVA.VirtualAddress);
             _imageCore20Header = Marshal.PtrToStructure<IMAGE_COR20_HEADER>(cor20Addr);
 

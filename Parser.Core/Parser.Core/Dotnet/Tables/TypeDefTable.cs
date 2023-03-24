@@ -24,7 +24,7 @@ namespace Parser.Core.Dotnet.Tables
         /// </summary>
         public dynamic TypeName { get; set; }
         /// <summary>
-        /// 
+        /// an index into the String heap
         /// </summary>
         public dynamic TypeNamespace { get; set; }
 
@@ -35,6 +35,15 @@ namespace Parser.Core.Dotnet.Tables
         /// an index into the TypeDef, TypeRef, or TypeSpec table
         /// </summary>
         public dynamic Extends { get; set; }
+        /// <summary>
+        /// TypeDefOrRef  2bit
+        /// 00  TypeDef
+        /// 01  TypeRef
+        /// 10  TypeSpec
+        /// </summary>
+        public MetadataTableType Extends_Type { get; set; }
+
+        public uint ExtendsIndex { get; set; }
         /// <summary>
         /// an index into the Field table
         /// </summary>
@@ -57,7 +66,6 @@ namespace Parser.Core.Dotnet.Tables
             TypeDefTable typeDefTable = new TypeDefTable();
             typeDefTable.Flags = (TypeAttributes)ReadUInt32(baseAddr + offset);
             offset += 4;
-
             typeDefTable.TypeName = CheckIndexFromStringStream(parser, baseAddr, ref offset, typeDefTable.TypeName);
             typeDefTable.TypeNamespace = CheckIndexFromStringStream(parser, baseAddr, ref offset, typeDefTable.TypeNamespace);
             typeDefTable.Extends = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.Extends);
@@ -67,50 +75,17 @@ namespace Parser.Core.Dotnet.Tables
             // TypeRef  01
             // TypeSpec 10
             // 剩余14bit 是索引长度
-            var result = SpecifiedTable(typeDefTable.Extends, out int len);
-            //if (typeDefTable.Extends > parser.GetTableRows(result))
-            //{
-            //    offset -= 4;
-            //    typeDefTable.Extends = ReadUInt16(baseAddr + offset);
-            //    offset += 2;
-            //}
+            typeDefTable.Extends_Type = parser.Bitparser["TypeDefOrRef"].SpecifiedTable(typeDefTable.Extends, out int len);
+            typeDefTable.ExtendsIndex = (uint)len;
 
-            typeDefTable.FieldList = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.FieldList);
-            typeDefTable.MethodList = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.MethodList);
+            typeDefTable.FieldList = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.FieldList,parser.GetTableRows(MetadataTableType.Field) + 1);
+            typeDefTable.MethodList = CheckIndexFromWhatever(parser, baseAddr, ref offset, typeDefTable.MethodList, parser.GetTableRows(MetadataTableType.MethodDef) + 1);
 
             typeDefTable.StringTypeName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,typeDefTable.TypeName));
             typeDefTable.StringTypeNamespace = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,typeDefTable.TypeNamespace));
 
             Position = offset;
             return typeDefTable;
-        }
-
-        private MetadataTableType SpecifiedTable(dynamic extends,out int index)
-        {
-            index = 100;
-            if(extends == 0) { return MetadataTableType.TypeDef; }
-
-            char[] tables = Convert.ToString(extends, 2).ToCharArray();
-            Array.Reverse(tables);
-            byte[] len = new byte[tables.Length - 2];
-            // 二进制字符串 转换为字节数组  转为整数
-
-            if (tables[0] == '0' && tables[1] == '0')
-            {
-                return MetadataTableType.TypeDef;
-            }
-            else if (tables[0] == '1' && tables[1] == '0')
-            {
-                return MetadataTableType.TypeRef;
-            }
-            else if (tables[0] == '1' && tables[1] == '0')
-            {
-                return MetadataTableType.TypeSpec;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("解析错误");
-            }
         }
     }
 }

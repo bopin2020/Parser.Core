@@ -27,10 +27,14 @@ namespace Parser.Core.Dotnet.Tables
         /// an index into the MethodDef or MemberRef table; more precisely, a MethodDefOrRef
         /// </summary>
         public dynamic MethodBody { get; set; }
+        public MetadataTableType MethodBodyType { get; set; }
+        public uint MethodBodyIndex { get; set; }
         /// <summary>
         /// an index into the MethodDef or MemberRef table
         /// </summary>
         public dynamic MethodDeclaration { get; set; }
+        public MetadataTableType MethodDeclarationType { get; set; }
+        public uint MethodDeclarationIndex { get; set; }
     }
 
     public class MethodImplTableCalc : TableBase<MethodImplTable>
@@ -43,7 +47,12 @@ namespace Parser.Core.Dotnet.Tables
             MethodImplTable methodImplTable = new MethodImplTable();
             methodImplTable.Class = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodImplTable.Class);
             methodImplTable.MethodBody = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodImplTable.MethodBody);
+            methodImplTable.MethodBodyType = parser.Bitparser["MethodDefOrRef"].SpecifiedTable(methodImplTable.MethodBody, out int index);
+            methodImplTable.MethodBodyIndex = (uint)index;
+
             methodImplTable.MethodDeclaration = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodImplTable.MethodDeclaration);
+            methodImplTable.MethodDeclarationType = parser.Bitparser["MethodDefOrRef"].SpecifiedTable(methodImplTable.MethodDeclaration, out int index2);
+            methodImplTable.MethodDeclarationIndex = (uint)index2;
             Position = offset;
             return methodImplTable;
         }

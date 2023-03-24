@@ -11,6 +11,7 @@ namespace Parser.Core.Dotnet.Tables
     // page 235
     public enum MetadataTableType : ushort
     {
+        None,
         Module = 0x00,
         TypeRef = 0x01,
         TypeDef = 0x02,
@@ -49,5 +50,6 @@ namespace Parser.Core.Dotnet.Tables
         GenericParam = 0x2A,
         MethodSpec = 0x2b,
         GenericParamConstraint = 0x2C,
+        Permission,
     }
 }

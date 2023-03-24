@@ -21,14 +21,13 @@ namespace Parser.Core.Dotnet.Tables
         /// instantiation of
         /// </summary>
         public dynamic Method { get; set; }
+        public MetadataTableType MethodType { get; set; }
+        public uint MethodIndex { get; set; }
+
         /// <summary>
         /// an index into the Blob heap holding the signature of this instantiation
         /// </summary>
         public dynamic Instantiation { get; set; }
-        /// <summary>
-        /// an index into the Event or Property table
-        /// </summary>
-        public dynamic Association { get; set; }
     }
 
     public class MethodSpecTableCalc : TableBase<MethodSpecTable>
@@ -40,8 +39,10 @@ namespace Parser.Core.Dotnet.Tables
             int offset = 0;
             MethodSpecTable methodSpecTable = new MethodSpecTable();
             methodSpecTable.Method = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodSpecTable.Method);
+            methodSpecTable.MethodType = parser.Bitparser["MethodDefOrRef"].SpecifiedTable(methodSpecTable.Method, out int index);
+            methodSpecTable.MethodIndex = (uint)index;
+
             methodSpecTable.Instantiation = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodSpecTable.Instantiation);
-            methodSpecTable.Association = CheckIndexFromWhatever(parser, baseAddr, ref offset, methodSpecTable.Association);
             Position = offset;
             return methodSpecTable;
         }

@@ -1,5 +1,6 @@
 ﻿namespace Parser.Core.Dotnet.Bitmasks
 {
+    [Flags]
     /// <summary>
     /// Metadata logical format:
     /// other structures: Bitmasks and flags
@@ -15,6 +16,7 @@
         Reserved = 0x8003,
         SHA1 = 0x8004
     }
+    [Flags]
     /// <summary>
     /// II.23.1.2 Values for AssemblyFlags 
     /// page 275
@@ -65,6 +67,7 @@
         /// </summary>
         EnableJITcompileTracking = 0x8000
     }
+    [Flags]
     /// <summary>
     /// Flags for events
     /// </summary>
@@ -79,6 +82,7 @@
         /// </summary>
         RTSpecialName = 0x0400
     }
+    [Flags]
     /// <summary>
     /// Flags for fields
     /// </summary>
@@ -174,6 +178,7 @@
         /// </summary>
         HasFieldRVA = 0x0100
     }
+    [Flags]
     /// <summary>
     /// Flags for files
     /// </summary>
@@ -188,6 +193,7 @@
         /// </summary>
         ContainsNoMetaData = 0x0001,
     }
+    [Flags]
     /// <summary>
     /// Flags for Generic Parameters [GenericPara mAttributes]
     /// </summary>
@@ -228,6 +234,7 @@
         /// </summary>
         DefaultConstructorConstraint = 0x0010
     }
+    [Flags]
     public enum PInvokeAttributes : ushort
     {
         /// <summary>
@@ -258,6 +265,7 @@
         CallConvFastcall = 0x0500
 
     }
+    [Flags]
     /// <summary>
     /// Flags for ManifestResource
     /// </summary>
@@ -276,6 +284,7 @@
         /// </summary>
         Private = 0x0002
     }
+    [Flags]
     /// <summary>
     /// Flags for methods
     /// </summary>
@@ -378,6 +387,7 @@
         RequireSecObject = 0x8000
     }
 
+    [Flags]
     /// <summary>
     /// Flags for methods
     /// </summary>
@@ -447,6 +457,7 @@
         NoOptimization = 0x0040
     }
 
+    [Flags]
     /// <summary>
     /// Flags for MethodSemantics
     /// </summary>
@@ -480,6 +491,7 @@
         /// </summary>
         Fire = 0x0020
     }
+    [Flags]
     /// <summary>
     /// Flags for params
     /// </summary>
@@ -511,6 +523,7 @@
         Unused = 0xcfe0
     }
 
+    [Flags]
     public enum PropertyAttributes : ushort
     {
         /// <summary>
@@ -535,6 +548,7 @@
     /// <summary>
     /// Flags for types
     /// </summary>
+    [Flags]
     public enum TypeAttributes : uint
     {
         #region Visibility

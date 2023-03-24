@@ -23,8 +23,12 @@ namespace Parser.Core.Dotnet.Tables
     {
         /// <summary>
         /// an index into Field or Param table; more precisely   HasFieldMarshal coded index
+        /// 
+        /// HasFieldMarshall: 1 bit to encode tag
         /// </summary>
         public dynamic Parent { get; set; }
+        public MetadataTableType ParentType { get; set; }
+        public uint ParentIndex { get; set; }
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
@@ -41,6 +45,9 @@ namespace Parser.Core.Dotnet.Tables
             FieldMarshalTable fieldMarshal = new FieldMarshalTable();
 
             fieldMarshal.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, fieldMarshal.Parent);
+            fieldMarshal.ParentType = parser.Bitparser["HasFieldMarshall"].SpecifiedTable(fieldMarshal.Parent, out int index);
+            fieldMarshal.ParentIndex = (uint)index;
+
             fieldMarshal.NativeType = CheckIndexFromWhatever(parser, baseAddr, ref offset, fieldMarshal.NativeType);
             Position = offset;
 

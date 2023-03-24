@@ -45,6 +45,8 @@ namespace Parser.Core.Dotnet.Tables
         /// If implementation indexes the File Table then Flags.VisibilityMask shall be public
         /// </summary>
         public dynamic Implementation { get; set; }
+        public MetadataTableType ImplementationType { get; set; }
+        public uint ImplementationIndex { get; set; }
     }
 
     public class ExportedTypeTableCalc : TableBase<ExportedTypeTable>
@@ -61,6 +63,9 @@ namespace Parser.Core.Dotnet.Tables
             exportedType.TypeName = CheckIndexFromStringStream(parser, baseAddr, ref offset, exportedType.TypeName);
             exportedType.TypeNamespace = CheckIndexFromStringStream(parser, baseAddr, ref offset, exportedType.TypeNamespace);
             exportedType.Implementation = CheckIndexFromWhatever(parser, baseAddr, ref offset, exportedType.Implementation);
+
+            exportedType.ImplementationType = parser.Bitparser["Implementation"].SpecifiedTable(exportedType.Implementation, out int index);
+            exportedType.ImplementationIndex = (uint)index;
 
             exportedType.StringTypeName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,exportedType.TypeName));
             exportedType.StringTypeNamespace = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,exportedType.TypeNamespace));

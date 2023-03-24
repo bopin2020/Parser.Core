@@ -20,8 +20,12 @@ namespace Parser.Core.Dotnet.Tables
     {
         /// <summary>
         /// an index into the MethodDef, ModuleRef,TypeDef, TypeRef, or TypeSpec tables
+        /// MemberRefParent
         /// </summary>
         public dynamic Class { get; set; }
+        public MetadataTableType ClassType { get; set; }
+        public uint ClassIndex { get; set; }
+
         /// <summary>
         /// an index into the String heap
         /// </summary>
@@ -47,6 +51,10 @@ namespace Parser.Core.Dotnet.Tables
             MemberRefTable memberRef = new MemberRefTable();
 
             memberRef.Class = CheckIndexFromWhatever(parser, baseAddr, ref offset, memberRef.Class);
+
+            memberRef.ClassType = parser.Bitparser["MemberRefParent"].SpecifiedTable(memberRef.Class, out int index);
+            memberRef.ClassIndex = (uint)index;
+
             memberRef.Name = CheckIndexFromStringStream(parser, baseAddr, ref offset, memberRef.Class);
             memberRef.Signature = CheckIndexFromBlobStream(parser, baseAddr, ref offset, memberRef.Class);
             memberRef.StringName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,memberRef.Name));

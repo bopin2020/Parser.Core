@@ -36,6 +36,8 @@ namespace Parser.Core.Dotnet.Tables
         /// The Implementation specifies which file holds this resource
         /// </summary>
         public dynamic Implementation { get; set; }
+        public MetadataTableType ImplementationType { get; set; }
+        public uint ImplementationIndex { get; set; }
     }
 
     public class ManifestResourceTableCalc : TableBase<ManifestResourceTable>
@@ -51,6 +53,9 @@ namespace Parser.Core.Dotnet.Tables
 
             manifestResource.Name = CheckIndexFromStringStream(parser, baseAddr, ref offset, manifestResource.Name);
             manifestResource.Implementation = CheckIndexFromWhatever(parser, baseAddr, ref offset, manifestResource.Implementation);
+
+            manifestResource.ImplementationType = parser.Bitparser["Implementation"].SpecifiedTable(manifestResource.Implementation, out int index);
+            manifestResource.ImplementationIndex = (uint)index;
 
             manifestResource.StringName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,manifestResource.Name));
 

@@ -31,7 +31,7 @@ namespace Parser.Core.Dotnet.Tables
             int offset = 0;
             AssemblyRefProcessor assemblyRefProcessor = new AssemblyRefProcessor();
             assemblyRefProcessor.Processor = ReadUInt32(baseAddr + offset); offset += 4;
-            assemblyRefProcessor.AssemblyRef = CheckIndexFromStringStream(parser, baseAddr, ref offset, assemblyRefProcessor.AssemblyRef);
+            assemblyRefProcessor.AssemblyRef = CheckIndexFromWhatever(parser, baseAddr, ref offset, assemblyRefProcessor.AssemblyRef, parser.GetTableRows(MetadataTableType.AssemblyRef));
 
             Position = offset;
             return assemblyRefProcessor;

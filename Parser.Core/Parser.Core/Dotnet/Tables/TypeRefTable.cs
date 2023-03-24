@@ -19,6 +19,8 @@ namespace Parser.Core.Dotnet.Tables
         /// or null; more precisely, a ResolutionScope
         /// </summary>
         public dynamic ResolutionScope { get; set; }
+        public MetadataTableType ResolutionScopeType { get; set; }
+        public uint ResolutionScopeIndex { get; set; }
         /// <summary>
         /// an index into the String heap
         /// </summary>
@@ -47,6 +49,9 @@ namespace Parser.Core.Dotnet.Tables
             int offset = 0;
             TypeRefTable typeref = new TypeRefTable();
             typeref.ResolutionScope = CheckIndexFromWhatever(parser,baseAddr,ref offset, typeref.ResolutionScope);
+            typeref.ResolutionScopeType = parser.Bitparser["ResolutionScope"].SpecifiedTable(typeref.ResolutionScope, out int index);
+            typeref.ResolutionScopeIndex = (uint)index;
+
             typeref.TypeName = CheckIndexFromStringStream(parser,baseAddr,ref offset, typeref.TypeName);
             typeref.TypeNamespace = CheckIndexFromStringStream(parser,baseAddr,ref offset, typeref.TypeNamespace);
             typeref.StringTypeName = Marshal.PtrToStringAnsi(parser.GetOffset(parser.StringStreamAddr,typeref.TypeName));

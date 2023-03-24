@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Parser.Core.Dotnet.Bitmasks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -35,6 +36,10 @@ namespace Parser.Core.Dotnet.Tables
         ///HasConstant(§II.24.2.6) coded index
         /// </summary>
         public dynamic Parent { get; set; }
+
+        public MetadataTableType ParentType { get; set; }
+        public uint ParentIndex { get; set; }
+
         /// <summary>
         /// an index into the Blob heap
         /// </summary>
@@ -54,9 +59,11 @@ namespace Parser.Core.Dotnet.Tables
             constant.PaddingZero = 0x00;
             offset += 1;
 
-
             constant.Parent = CheckIndexFromWhatever(parser, baseAddr, ref offset, constant.Parent);
-            constant.Value = CheckIndexFromWhatever(parser, baseAddr, ref offset, constant.Value);
+            constant.ParentType = parser.Bitparser["HasConstant"].SpecifiedTable(constant.Parent,out int index);
+            constant.ParentIndex = (uint)index;
+
+            constant.Value = CheckIndexFromBlobStream(parser, baseAddr, ref offset, constant.Value);
             Position = offset;
             return constant;
         }

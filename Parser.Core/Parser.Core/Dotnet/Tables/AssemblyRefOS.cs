@@ -34,7 +34,7 @@ namespace Parser.Core.Dotnet.Tables
             assemblyRefOS.OSMajorVersion = ReadUInt32(baseAddr + offset); offset += 4;
             assemblyRefOS.OSMinorVersion = ReadUInt32(baseAddr + offset); offset += 4;
 
-            assemblyRefOS.AssemblyRef = CheckIndexFromWhatever(parser, baseAddr, ref offset, assemblyRefOS.AssemblyRef);
+            assemblyRefOS.AssemblyRef = CheckIndexFromWhatever(parser, baseAddr, ref offset, assemblyRefOS.AssemblyRef,parser.GetTableRows(MetadataTableType.AssemblyRef));
 
             Position = offset;
             return assemblyRefOS;

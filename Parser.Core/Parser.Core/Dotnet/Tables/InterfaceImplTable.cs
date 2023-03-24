@@ -22,6 +22,8 @@ namespace Parser.Core.Dotnet.Tables
         /// an index into the TypeDef, TypeRef, or TypeSpec table
         /// </summary>
         public dynamic Interface { get; set; }
+        public MetadataTableType InterfaceType { get; set; }
+        public uint InterfaceIndex { get; set; }
     }
 
     public class InterfaceImplTableCalc : TableBase<InterfaceImplTable>
@@ -34,6 +36,10 @@ namespace Parser.Core.Dotnet.Tables
             InterfaceImplTable interfaceImpl = new InterfaceImplTable();
             interfaceImpl.Class = CheckIndexFromWhatever(parser, baseAddr, ref offset, interfaceImpl.Class);
             interfaceImpl.Interface = CheckIndexFromWhatever(parser, baseAddr, ref offset, interfaceImpl.Interface);
+
+            interfaceImpl.InterfaceType = parser.Bitparser["TypeDefOrRef"].SpecifiedTable(interfaceImpl.Interface, out int index);
+            interfaceImpl.InterfaceIndex = (uint)index;
+
             Position = offset;
             return interfaceImpl;
         }
