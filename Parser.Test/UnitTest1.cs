@@ -34,7 +34,7 @@ namespace Parser.Test
 
             foreach (var item in dotnetParser.GetMetadataTable<ImplMapTable>(MetadataTableType.ImplMap))
             {
-                Console.WriteLine(imports.ToArray()[item.ImportScope].StringName + "\t" + item.StringImportName);
+                Console.WriteLine(imports.ToArray()[item.ImportScope - 1].StringName + "\t" + item.StringImportName);
             }
 
             dotnetParser.MetadataAddr.MemoryDump(48);
